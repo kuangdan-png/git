@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
+ 	<listener>
+ 	<!-- BookTypeSearchListenter xx=new BookTypeSearchListenter(); -->
+ 		<listener-class>com.book.shopping.listener.BookTypeSearchListenter</listener-class>
+ 	</listener>
+ 	
+ 	<servlet>
+ 		<servlet-name>bookInfoManagerServlet</servlet-name>
+ 		<servlet-class>com.book.shopping.servlet.BookInfoManagerServlet</servlet-class>
+ 	</servlet>
+ 	<servlet-mapping>
+ 		<servlet-name>bookInfoManagerServlet</servlet-name>
+ 		<url-pattern>/bookInfoManagerServlet</url-pattern>
+ 	</servlet-mapping>
+ 	
+ 	<servlet>
+		<servlet-name>managerBookTypeServlet</servlet-name>
+		<servlet-class>com.java.web.chapter08.servlet.ManagerBookTypeServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>managerBookTypeServlet</servlet-name>
+		<url-pattern>/managerBookTypeServlet</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>shoppingcarServlet</servlet-name>
+		<servlet-class>com.book.shopping.servlet.ShoppingcarServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>shoppingcarServlet</servlet-name>
+		<url-pattern>/shoppingcarServlet</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>registerTeleServlet</servlet-name>
+		<servlet-class>com.java.web.chapter10.servlet.RegisterTeleServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>registerTeleServlet</servlet-name>
+		<url-pattern>/registerTeleServlet</url-pattern>
+	</servlet-mapping>
+</web-app>
