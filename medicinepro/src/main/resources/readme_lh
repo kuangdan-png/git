@@ -1,0 +1,80 @@
+1.药品过期查询 完成
+    准备：
+        1.1 数据库数据的插入
+            1.1.1 商品数据插入 完成
+            1.1.2 生产厂商插入 完成
+            1.1.3 仓库插入
+            1.1.4
+        1.2 界面
+        1.3 sql语句
+            select comId,comName,comUnit,comProduct,comApproval,comQuality,manName,repertoryson.repNumber from commodity
+                inner join  manufacturer on comManufact=manId
+                inner join repertoryson on repComId=comId
+                inner join warehouse on reqWareNo=warID
+    第一步：准备 完成
+    第二步：编写处理器，业务逻辑，及接口、实现类的实现 完成
+    第三步：将药品查询出来 完成
+        ku/staleDated.html
+2.高级查询： 完成
+        第一步：准备SQL语句： 完成
+            select warID,warName,employeesNo,warPhone,warAddressNo,warAddress,warDefault,warForbidNo,warComment,repNumber,warTotalValue,warCurrent,warLowest,duo1,duo2,duo3 from warehouse
+        第二步：查询仓库存储至下拉框中 完成
+
+        第一步：准备Sql语句 完成
+        第一步：在界面获取数据：要传递 完成
+        第二步：编写处理器，业务逻辑，及接口、实现类的实现 完成
+        第三步：将药品查询出来 完成
+4.：权限
+       页面授权
+                非第一次：
+                    1.查询该登录者管理下的员工
+
+                    2.给其它员工统一授权，并同一的设置角色
+
+                第一次：
+                    1.第一个登录的人，需要添加一个员工本人，
+                        并授权，并退出，删除前面的登录信息
+                    2.添加全部信息，运用程序
+                      要实现导入、导出
+
+                    权限设置范围仅仅限于页面
+
+            1.显示页面权限：完成
+                第一步：根据登录信息获得一级菜单数据
+                第二步：根据一级菜单信息查询二级菜单
+                第三步：将一二级菜单合并在map中，并传递给页面显示
+                第四步：渲染layui垂直菜单
+
+            3.编辑权限页面
+
+            4.当对角色或者权限进行修改时，分配权限的属性控件要重新加载
+                #授权
+                #将用户和角色关联
+                insert into  employees_role(empRolNo,empNo,rolNo,empRolRemark)values()
+                #1.获得最大编号
+                #2.插入数据
+                #3.修改最大编号存储
+
+
+                #将角色和权限关联
+                insert into role_authority(roleAuthNo,rolNo,authFirstMenuNo,authSecondMenuNo,authActionNo,roleAuthDesc) values()
+                #1.获得最大编号
+                #2.插入数据
+                #3.修改最大编号存储
+
+                完成
+                待测试
+
+            5:库存调拨 完成
+                1.点击添加商品，进入添加商品页面   完成
+                2.经办人显示
+                3.将商品添加后，点击保存进入数据库
+
+
+
+
+
+
+
+
+

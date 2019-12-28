@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="medicinepro.commodityType">
+    <select id="searchCommodityTypeParent" resultMap="categoryt">
+            SELECT catId,catParentId,catSort,catExplain,catName title FROM category
+        WHERE catParentId IS NULL
+    </select>
+    <select id="searchCommodityType" resultMap="categoryt" parameterType="string">
+         SELECT catId,catParentId,catSort,catExplain,catName title FROM category
+        WHERE catParentId=#{parentid}
+    </select>
+    <select id="searchCommodityTypeseniorSeclct"  resultMap="categoryt" parameterType="string">
+        SELECT catId,catParentId,catSort,catExplain,catName title FROM category
+        WHERE catId LIKE "%"#{question}"%" OR catName LIKE "%"#{question}"%" OR catParentId LIKE "%"#{question}"%"
+        OR catSort LIKE "%"#{question}"%" OR catExplain LIKE "%"#{question}"%"
+    </select>
+    <resultMap id="categoryt" type="category">
+        <id column="catId" property="catId"></id>
+        <result column="catParentId" property="catParentId"></result>
+        <result column="catSort" property="catSort"></result>
+        <result column="catExplain" property="catExplain"></result>
+        <result column="title" property="title"></result>
+    </resultMap>
+</mapper>

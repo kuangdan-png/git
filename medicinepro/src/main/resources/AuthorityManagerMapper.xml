@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="authorityManager.crud">
+    <!--查询角色信息-->
+    <select id="searchRoleInfo" resultMap="roleMap" parameterType="page">
+      select rolNo,rolName,rolCreatetime,rolOrderNumber,rolDesc,rolStatus,
+        (select empName from employees where
+        rolAuthoEmployNo= empNo
+            ) rolAuthoEmployNo from role
+
+            limit #{page},#{limit}
+    </select>
+
+    <!--role 角色map-->
+    <resultMap id="roleMap" type="role">
+        <id property="rolNo" column="rolNo"/>
+        <result property="rolName" column="rolName"/>
+        <result property="rolCreatetime" column="rolCreatetime"/>
+        <result property="rolOrderNumber" column="rolOrderNumber"/>
+        <result property="rolDesc" column="rolDesc"/>
+        <result property="rolStatus" column="rolStatus"/>
+        <result property="rolAuthoEmployNo" column="rolAuthoEmployNo"/>
+        <result property="rolParentNo" column="rolParentNo"/>
+    </resultMap>
+
+    <!--查询角色的总条数-->
+    <select id="searchRoleAll" resultType="int">
+        select count(*) from role
+    </select>
+
+    <!--新增角色-->
+    <insert id="excuteAddRoles" parameterType="role">
+        insert into role(rolNo,rolName,rolCreatetime,rolDesc,rolStatus,rolAuthoEmployNo)
+        value(#{rolNo},#{rolName},#{rolCreatetime},#{rolDesc},#{rolStatus},#{rolAuthoEmployNo});
+    </insert>
+
+    <!--修改表的最大编号-->
+    <update id="excuteUpdateRolesMaxNo" parameterType="maxNo">
+        update max_no set manSort = #{manSort}
+        where 1=1
+        <if test="null != manName and '' != manName">
+            and manName=#{manName}
+        </if>
+        <if test="null != manQu">
+            and manQu=#{manQu}
+        </if>
+    </update>
+
+    <!--查询角色信息通过角色编号-->
+    <select id="getRolesByRolNo" parameterType="role" resultMap="roleMap">
+        select rolNo,rolName,rolCreatetime,rolDesc,rolStatus,rolParentNo from role
+        where 1=1
+        <if test="null != rolNo and ''!=rolNo">
+            and rolNo=#{rolNo}
+        </if>
+    </select>
+
+    <!--查询角色没有被禁用的-->
+    <select id="searchRoles" resultMap="roleMap">
+        select rolNo,rolName,rolCreatetime,rolOrderNumber,rolDesc,rolStatus,rolAuthoEmployNo,rolParentNo from role
+        where rolStatus=0
+    </select>
+
+    <!--将修改角色状态-->
+    <update id="updateRolesInfo" parameterType="role">
+        update role
+        <trim prefix="set" suffixOverrides=",">
+            <if test="rolName!=null and '' != rolName">rolName=#{rolName},</if>
+            <if test="rolCreatetime!=null and '' != rolCreatetime">rolCreatetime=#{rolCreatetime},</if>
+            <if test="rolDesc!=null and '' != rolDesc">rolDesc=#{rolDesc},</if>
+            <if test="rolStatus!=null">rolStatus=#{rolStatus},</if>
+            <if test="rolAuthoEmployNo!=null and '' != rolAuthoEmployNo">rolAuthoEmployNo=#{rolAuthoEmployNo},</if>
+        </trim>
+        where rolNo=#{rolNo}
+    </update>
+
+    <!--权限查询-->
+    <select id="searchAuthorityInfo" resultMap="authorityMap" parameterType="page" >
+         select autNo,autName,(select autName from authority b where a.autParentNo= b.autNo ) autParentNo,
+ autDesc,(select autName from authority b where a.autButton= b.autNo)autButton,autOrderNumber,autStatus from authority a
+          <if test="null != page and '' !=page">
+              limit #{page},#{limit}
+          </if>
+    </select>
+
+    <!--权限总条数-->
+    <select id="searchAuthorityAll" resultType="int">
+        select count(*) from authority
+    </select>
+
+    <!--新增权限信息-->
+    <insert id="insertAuthority" parameterType="authority">
+      insert into authority (autNo,autName,autParentNo,autDesc,autStatus)
+      values(#{autNo},#{autName},#{autParentNo},#{autDesc},#{autStatus})
+    </insert>
+
+    <!--authority map-->
+    <resultMap id="authorityMap" type="authority">
+        <id column="autNo" property="autNo"/>
+        <result column="autName" property="autName"/>
+        <result column="autParentNo" property="autParentNo"/>
+        <result column="autDesc" property="autDesc"/>
+        <result column="autButton" property="autButton"/>
+        <result column="autImg" property="autImg"/>
+        <result column="autUrl" property="autUrl"/>
+        <result column="autOrderNumber" property="autOrderNumber"/>
+        <result column="aut1" property="aut1"/>
+        <result column="aut2" property="aut2"/>
+        <result column="aut3" property="aut3"/>
+    </resultMap>
+
+    <!--查询一级权限没有被禁用的信息-->
+    <select id="searchAuthority" resultMap="authorityMap">
+        select autNo,autName,autParentNo,autDesc,autButton,autImg,autUrl,autOrderNumber,autFilter,autStatus
+        from authority where autStatus=0 and autParentNo is null
+    </select>
+
+    <!--查询二级权限没有被禁用的信息-->
+    <select id="searchSencondAuthority" parameterType="string" resultMap="authorityMap">
+       select autNo,autName,autParentNo,autDesc,autButton,autImg,autUrl,autOrderNumber,autFilter,autStatus
+        from authority where autStatus=0 and autParentNo=#{auto}
+    </select>
+
+    <!--查询员工信息-->
+    <select id="searchEmployees" resultType="employees" >
+       select empNo,empName from employees
+       where empNo not in (select empNo from employees_role)
+        and empState=1
+    </select>
+
+    <!--修改权限信息-->
+    <update id="updateAuthority" parameterType="authority">
+        update authority
+        <trim prefix="set" suffixOverrides=",">
+            <if test="autName!=null and '' != autName">autName=#{autName},</if>
+            <if test="autParentNo!=null and '' != autParentNo">autParentNo=#{autParentNo},</if>
+            <if test="autDesc!=null and '' != autDesc">autDesc=#{autDesc},</if>
+            <if test="autStatus!=null ">autStatus=#{autStatus},</if>
+            <if test="autButton!=null and '' != autButton">autButton=#{autButton},</if>
+        </trim>
+        where autNo=#{autNo}
+    </update>
+
+    <!--根据父级权限查询子权限-->
+    <select id="getAuthorityByAutNo" parameterType="authority" resultMap="authorityMap">
+        select autNo,autName,autParentNo,autDesc,autButton,autImg,autUrl,autOrderNumber,autFilter,autStatus
+        from authority
+        where 1=1
+        <if test="null != autNo and ''!=autNo">
+            and autNo=#{autNo}
+        </if>
+    </select>
+
+    <!--新增角色权限信息-->
+    <insert id="insertRoleAuthorityInfo" parameterType="roleAuthority" >
+        insert into role_authority(roleAuthNo,rolNo,authFirstMenuNo,authSecondMenuNo)
+         values(#{roleAuthNo},#{rolNo},#{authFirstMenuNo},#{authSecondMenuNo})
+    </insert>
+
+    <!--新增员工角色信息-->
+    <insert id="insertEmployeesRoleInfo" parameterType="employeesRole">
+        insert into  employees_role(empRolNo,empNo,rolNo,empRolRemark)values(#{empRolNo},#{empNo},#{rolNo},#{empRolRemark})
+    </insert>
+</mapper>

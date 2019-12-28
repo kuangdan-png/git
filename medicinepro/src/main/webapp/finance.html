@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>财务报表</title>
+    <link rel="stylesheet" href="layui/css/layui.css">
+    <script src="layui/layui.js"></script>
+    <script src="layui/layui.all.js"></script>
+    <script src="JQuery/jquery-3.4.1.min.js"></script>
+    <script src="layui/lay/modules/laydate.js"></script>
+</head>
+<body>
+<div class="layui-tab layui-tab-card">
+    <ul class="layui-tab-title">
+        <li class="layui-this">费用及收入</li>
+        <li>现金银行</li>
+        <li>固定资产</li>
+        <li>财务报表</li>
+    </ul>
+    <div class="layui-tab-content" style="height: 450px;">
+        <!--1费用及收入-->
+        <div class="layui-tab-item layui-show">
+            <!--头部按钮-->
+            <div id="button">
+                <button id="insert" type="button" class="layui-btn "><i class="layui-icon layui-icon-add-circle"></i>增加费用</button>
+                <button id="inserte" type="button" class="layui-btn "><i class="layui-icon layui-icon-add-circle"></i>增加收入</button>
+                <button id="one" type="button" class="layui-btn "><i class="layui-icon layui-icon-edit"></i>打印</button>
+                <button id="two" type="button" class="layui-btn "><i class="layui-icon layui-icon-close"></i>退出</button>
+                <!--<button type="button" class="layui-btn layui-btn-normal"><i class="layui-icon layui-icon-set"></i>提成管理</button>-->
+            </div>
+
+            <!--费用及收入第一个数据表-->
+            <table class="layui-hide" id="demo" lay-filter="test"></table>
+            <!--中间标题-->
+            <div style="border: 1px solid black; background-color: #9F9F9F;">
+                <i>费用及收入明细</i>
+            </div>
+            <!--费用及收入明细-->
+            <table class="layui-hide" id="test02"></table>
+        </div>
+        <!--2现金银行-->
+        <div class="layui-tab-item">
+            <!--按钮-->
+            <button type="button" class="layui-btn"><i class="layui-icon layui-icon-rmb"></i>出款</button>
+            <button type="button" class="layui-btn"><i class="layui-icon layui-icon-dollar"></i>进款</button>
+            <button type="button" class="layui-btn"><i class="layui-icon layui-icon-rmb"></i>银行转账</button>
+            <button type="button" class="layui-btn"><i class="layui-icon layui-icon-dollar"></i>初期建账</button>
+            <button type="button" class="layui-btn"><i class="layui-icon layui-icon-ok-circle"></i>打印</button>
+            <button type="button" class="layui-btn"><i class="layui-icon layui-icon-close"></i>退出</button>
+            <!--现金银行数据表-->
+            <table class="layui-hide" id="test03"></table>
+            <!--中间工具-查询数据，日期-->
+            <div style="border: 1px solid black; background-color: #9F9F9F;">
+                <i>明细</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                查询日期：
+                <!--开始日期-->
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" id="test2" placeholder="2019-11-25">
+                </div>
+                至
+                <!--结束日期-->
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" id="test2-1" placeholder="2019-11-25">
+                </div>
+            </div>
+            <!--现金明细表-->
+            <table class="layui-hide" id="test04"></table>
+        </div>
+        <!--3固定资产-->
+        <div class="layui-tab-item">
+            <!--按钮-->
+            <button type="button" class="layui-btn"><i class="layui-icon layui-icon-rmb"></i>出款</button>
+            <button type="button" class="layui-btn"><i class="layui-icon layui-icon-dollar"></i>进款</button>
+            <button type="button" class="layui-btn"><i class="layui-icon layui-icon-rmb"></i>银行转账</button>
+            <button type="button" class="layui-btn"><i class="layui-icon layui-icon-dollar"></i>初期建账</button>
+            <button type="button" class="layui-btn"><i class="layui-icon layui-icon-ok-circle"></i>打印</button>
+            <button type="button" class="layui-btn"><i class="layui-icon layui-icon-close"></i>退出</button>
+            <!--中间工具栏-->
+            <div style="border: 1px solid black; background-color: #9F9F9F;">
+                <i>明细</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                查询日期：
+                <!--开始日期-->
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" id="test3" placeholder="2019-11-25">
+                </div>
+                至
+                <!--结束日期-->
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" id="test3-1" placeholder="2019-11-25">
+                </div>
+            </div>
+            <!--固定资产数据表-->
+            <table class="layui-hide" id="test05"></table>
+        </div>
+        <!--4财务报表-->
+        <div class="layui-tab-item">
+            <!--按钮-->
+            <button type="button" class="layui-btn"><i class="layui-icon layui-icon-ok-circle"></i>打印</button>
+            <button type="button" class="layui-btn"><i class="layui-icon layui-icon-close"></i>退出</button>
+            <!--财务报表-->
+            <!--财务的选项卡-->
+            <div class="layui-tab layui-tab-card">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">应收应付表</li>
+                    <li>经营情况表</li>
+                    <li>资产负债表</li>
+                </ul>
+                <div class="layui-tab-content" style="height: 400px;">
+                    <!--应收应付表-->
+                    <div class="layui-tab-item layui-show">
+                        <!--应收应付汇总表-->
+                        应收应付汇总表
+                        <table class="layui-hide" id="test06"></table>
+                        <!--中间工具-查询数据，日期-->
+                        <div style="border: 1px solid black; background-color: #9F9F9F;">
+                            <i>明细</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            查询日期：
+                            <!--开始日期-->
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="test4" placeholder="2019-11-25">
+                            </div>
+                            至
+                            <!--结束日期-->
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="test4-1-1" placeholder="2019-11-25">
+                            </div>
+                        </div>
+                        <!--应收应付明细表-->
+                        <table class="layui-hide" id="test07"></table>
+                    </div>
+                    <!--经营情况表-->
+                    <div class="layui-tab-item">
+                        <!--头部工具-查询数据，日期-->
+                        <div style="border: 1px solid black; background-color: #9F9F9F;">
+                            <i>经营情况表</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            查询日期：
+                            <!--开始日期-->
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="test4-2-1" placeholder="2019-11-25">
+                            </div>
+                            至
+                            <!--结束日期-->
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="test4-2-2" placeholder="2019-11-25">
+                            </div>
+                        </div>
+                        <!--经营情况表-->
+                        <table class="layui-hide" id="test08"></table>
+                        <!--中间标题-->
+                        <div style="border: 1px solid black; background-color: #9F9F9F;">
+                            <i>经营情况明细</i>
+                        </div>
+                        <!--经营情况明细表-->
+                        <table class="layui-hide" id="test09"></table>
+                    </div>
+                    <!--资产负债表-->
+                    <div class="layui-tab-item">
+                        <!--头部工具-查询数据，日期-->
+                        <div style="border: 1px solid black; background-color: #9F9F9F;">
+                            资产负债日：<i>2019-11-25</i>
+                            &nbsp:&nbsp:&nbsp:&nbsp:&nbsp:&nbsp:&nbsp:&nbsp:&nbsp:&nbsp:&nbsp:&nbsp:&nbsp:&nbsp:&nbsp:&nbsp:&nbsp:&nbsp:
+                            统计日期：
+                            <!--统计日期-->
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="test4-3-1" placeholder="2019-11-25">
+                            </div>
+                        </div>
+                        <!--资产负债表-->
+                        <table class="layui-hide" id="test010"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--弹出框-增加费用-->
+<div id="insertdiv" style="display: none">
+    <form id="finsert" method="post" action="">
+        <table align="center" cellpadding="3px">
+            <tr>
+                <td>名称:</td>
+                <td><input type="text" name="" lay-verify="required" class="layui-input">  </td>
+                <td>费用金额:</td>
+                <td><input type="text" name="" lay-verify="required" value="￥0.00" class="layui-input"></td>
+            </tr>
+
+            <tr>
+                <td>经办人:</td>
+                <td><input type="text" name="" lay-verify="required" class="layui-input"></td>
+                <td>付款账户:</td>
+                <td><input type="text" name="" lay-verify="required" class="layui-input"></td>
+            </tr>
+
+            <tr>
+                <td>备注:</td>
+                <td><input type="text" name="" lay-verify="required" class="layui-input"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <button class="layui-btn" lay-submit lay-filter="formDemo">增加</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">退出</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<!--弹出框-增加收入-->
+<div id="insertdv" style="display: none">
+    <form id="fdinsert" method="post" action="">
+        <table align="center" cellpadding="3px">
+            <tr>
+                <td>名称:</td>
+                <td><input type="text" name="" lay-verify="required" class="layui-input">  </td>
+                <td>费用金额:</td>
+                <td><input type="text" name="" lay-verify="required" value="￥0.00" class="layui-input"></td>
+            </tr>
+
+            <tr>
+                <td>经办人:</td>
+                <td><input type="text" name="" lay-verify="required" class="layui-input"></td>
+                <td>付款账户:</td>
+                <td><input type="text" name="" lay-verify="required" class="layui-input"></td>
+            </tr>
+
+            <tr>
+                <td>备注:</td>
+                <td><input type="text" name="" lay-verify="required" class="layui-input"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <button class="layui-btn" lay-submit lay-filter="formDemo">增加</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">退出</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<!--增删改查的script-->
+<script>
+    //日期和时间组件文档 - layui.laydate
+    layui.use('laydate', function(){
+        var laydate = layui.laydate;
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#date1' //指定元素
+        });
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#date2' //指定元素
+        });
+    });
+
+    //执行一个 table 实例
+    layui.use('table', function(){
+        var table = layui.table;
+        //第一个实例
+        table.render({
+            elem: '#demo'
+
+            ,url: '/demo/table/user/' //数据接口
+            ,page: true //开启分页
+            ,totalRow: true //开启合计行
+            ,cols: [[ //表头
+                {type: 'checkbox', fixed: 'left'}
+                ,{field:'id', title:'会员编号'}
+                ,{field:'username', title:'会员名称'}
+                ,{field:'email', title:'会员级别'}
+                ,{field:'sex', title:'会员积分'}
+                ,{field:'city', title:'总销售额'}
+                ,{field:'sign', title:'消费次数'}
+                ,{field:'experience', title:'积分余额'}
+                ,{field:'ip', title:'卡内余额'}
+                ,{field:'logins', title:'会员状态'}
+                ,{field:'joinTime', title:'按积分升级'}
+                ,{fixed: 'right', title:'优惠方式'}
+            ]]
+        });
+
+        $('#button button').click(function(){
+            var idValue=$(this).attr("id");
+            var checkStatus = table.checkStatus('username') //idTest 即为基础参数 id 对应的值
+            data = checkStatus.data; //获取选中的数据
+            if("insert"==idValue) {//新增
+                layer.open({
+                    //layer提供了5种层类型。可传入的值有：0（信息框，默认）1（页面层）2（iframe层）3（加载层）4（tips层）
+                    type:1,
+                    closeBtn:2,
+                    title:"增加费用",
+                    area: ['40%','95%'],// $('#id')
+                    content:$('#insertdiv'),
+                    skin:'demo-class',
+                    success: function(layero, index){
+                        $('#insertdiv').css({"display": "block"});
+                        console.log(layero, index);
+                    },
+                    end:function(layero, index){
+                        $('#insertdiv').css({"display": "none"});
+                        console.log(layero, index);
+                    }
+                })
+            }else if("update"==idValue){//修改
+                if(data.length === 0){
+                    layer.msg('请选择一行');
+                } else if(data.length > 1){
+                    layer.msg('只能同时编辑一个');
+                } else {
+                    layer.open({
+                        //layer提供了5种层类型。可传入的值有：0（信息框，默认）1（页面层）2（iframe层）3（加载层）4（tips层）
+                        type:1,
+                        closeBtn:2,
+                        title:"修改会员信息",
+                        area: ['40%','90%'],// $('#id')
+                        content:'update',
+                        skin:'demo-class',
+                    })
+                }
+            }else if("delete"==idValue){
+                if(data.length === 0){
+                    layer.msg('请选择一行');
+                } else {
+                    layer.msg('删除');
+                }
+            }else if("select"==idValue){
+                layer.open({
+                    //layer提供了5种层类型。可传入的值有：0（信息框，默认）1（页面层）2（iframe层）3（加载层）4（tips层）
+                    type:1,
+                    closeBtn:2,
+                    title:"查询单据",
+                    area: ['30%','41%'],// $('#id')
+                    content:$('#selectdiv'),
+                    skin:'demo-class',
+                    success: function(layero, index){
+                        $('#selectdiv').css({"display": "block"});
+                        console.log(layero, index);
+                    },
+                    end:function(layero, index){
+                        $('#selectdiv').css({"display": "none"});
+                        console.log(layero, index);
+                    }
+                })
+            }else if("inserte"==idValue) {//新增
+                layer.open({
+                    //layer提供了5种层类型。可传入的值有：0（信息框，默认）1（页面层）2（iframe层）3（加载层）4（tips层）
+                    type:1,
+                    closeBtn:2,
+                    title:"增加收入",
+                    area: ['40%','95%'],// $('#id')
+                    content:$('#insertdv'),
+                    skin:'demo-class',
+                    success: function(layero, index){
+                        $('#insertdv').css({"display": "block"});
+                        console.log(layero, index);
+                    },
+                    end:function(layero, index){
+                        $('#insertdv').css({"display": "none"});
+                        console.log(layero, index);
+                    }
+                })
+            }
+        });
+
+    });
+
+    layui.use('laypage', function(){
+        var laypage = layui.laypage;
+        //执行一个laypage实例
+        //分页
+        laypage.render({
+            elem: 'pageDemo' //分页容器的id
+            ,skin: '#1E9FFF' //自定义选中色值
+            ,first:1
+            ,last:50 //总页数值
+            ,limits:[10, 20, 30]
+            ,skip: true //开启跳页
+            ,jump: function(obj, first){
+                if(!first){
+                    layer.msg('第'+ obj.curr +'页', {offset: 'b'});
+                }
+            }
+        });
+    });
+
+</script>
+
+
+<!--查询日期的script-->
+<script>
+    layui.use('laydate', function(){
+        var laydate = layui.laydate;
+        // 现金银行
+        // 开始日期
+        laydate.render({
+            elem: '#test2'
+        });
+        // 结束日期
+        var laydate = layui.laydate;
+        laydate.render({
+            elem: '#test2-1'
+        });
+        // 固定资产的日期
+        // 开始日期
+        laydate.render({
+            elem:'#test3'
+        })
+        // 结束日期
+        var laydate = layui.laydate;
+        laydate.render({
+            elem: '#test3-1'
+        });
+        // 财务报表日期
+        // 开始日期
+        laydate.render({
+            elem:'#test4'
+        })
+        // 结束日期
+        var laydate = layui.laydate;
+        laydate.render({
+            elem: '#test4-1-1'
+        });
+        // 经营情况表日期
+        // 开始日期
+        laydate.render({
+            elem:'#test4-2-1'
+        })
+        // 结束日期
+        var laydate = layui.laydate;
+        laydate.render({
+            elem: '#test4-2-2'
+        });
+        // 资产负债表日期
+        var laydate = layui.laydate;
+        laydate.render({
+            elem: '#test4-3-1'
+        });
+    });
+</script>
+
+<!--数据表的script-->
+<script>
+    layui.use('table', function(){
+        var table = layui.table;
+        // 1-01费用及收入的第一个数据表
+        table.render({
+            elem: '#test01'
+            ,url:'/test/table/demo1.json'
+
+            ,title: ''
+            ,cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{field:'id', title:'数据名称', width:80, fixed: 'left', unresize: true, sort: true}
+                ,{field:'username', title:'总金额', width:120, edit: 'text'}
+                ,{field:'email', title:'费用/收入'}
+                ,{field:'sex', title:'附加备注'}
+            ]]
+            ,page: true
+        });
+        //1-02费用及明细
+        table.render({
+            elem: '#test02'
+            ,url:'/test/table/demo1.json'
+            ,title: ''
+            ,cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{field:'id', title:'日期', width:80, fixed: 'left', unresize: true, sort: true}
+                ,{field:'username', title:'金额', width:120, edit: 'text'}
+                ,{field:'email', title:'经办人'}
+                ,{field:'sex', title:'操作员'}
+                ,{field:'sex', title:'备注'}
+            ]]
+            ,page: true
+        });
+        //2-03现金银行表
+        table.render({
+            elem: '#test03'
+            ,url:'/test/table/demo1.json'
+            ,title: ''
+            ,cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{field:'id', title:'日期', width:80, fixed: 'left', unresize: true, sort: true}
+                ,{field:'username', title:'金额', width:120, edit: 'text'}
+                ,{field:'email', title:'经办人'}
+                ,{field:'sex', title:'操作员'}
+                ,{field:'sex', title:'备注'}
+            ]]
+            ,page: true
+        });
+        //2-04现金明细
+        table.render({
+            elem: '#test04'
+            ,url:'/test/table/demo1.json'
+            ,title: ''
+            ,cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{field:'id', title:'日期', width:80, fixed: 'left', unresize: true, sort: true}
+                ,{field:'username', title:'金额', width:120, edit: 'text'}
+                ,{field:'email', title:'经办人'}
+                ,{field:'sex', title:'操作员'}
+                ,{field:'sex', title:'备注'}
+            ]]
+            ,page: true
+        });
+        //3-05现金明细
+        table.render({
+            elem: '#test05'
+            ,url:'/test/table/demo1.json'
+            ,title: ''
+            ,cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{field:'id', title:'日期', width:80, fixed: 'left', unresize: true, sort: true}
+                ,{field:'username', title:'金额', width:120, edit: 'text'}
+                ,{field:'email', title:'经办人'}
+                ,{field:'sex', title:'操作员'}
+                ,{field:'sex', title:'备注'}
+            ]]
+            ,page: true
+        });
+        //4-01-06应收应付表
+        table.render({
+            elem: '#test06'
+            ,url:'/test/table/demo1.json'
+            ,title: ''
+            ,cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{field:'id', title:'日期', width:80, fixed: 'left', unresize: true, sort: true}
+                ,{field:'username', title:'金额', width:120, edit: 'text'}
+                ,{field:'email', title:'经办人'}
+                ,{field:'sex', title:'操作员'}
+                ,{field:'sex', title:'备注'}
+            ]]
+            ,page: true
+        });
+        //4-02-07应收应付明细
+        table.render({
+            elem: '#test07'
+            ,url:'/test/table/demo1.json'
+            ,title: ''
+            ,cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{field:'id', title:'日期', width:80, fixed: 'left', unresize: true, sort: true}
+                ,{field:'username', title:'金额', width:120, edit: 'text'}
+                ,{field:'email', title:'经办人'}
+                ,{field:'sex', title:'操作员'}
+                ,{field:'sex', title:'备注'}
+            ]]
+            ,page: true
+        });
+        //4-02-08经营情况表
+        table.render({
+            elem: '#test08'
+            ,url:'/test/table/demo1.json'
+            ,title: ''
+            ,cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{field:'id', title:'日期', width:80, fixed: 'left', unresize: true, sort: true}
+                ,{field:'username', title:'金额', width:120, edit: 'text'}
+                ,{field:'email', title:'经办人'}
+                ,{field:'sex', title:'操作员'}
+                ,{field:'sex', title:'备注'}
+            ]]
+            ,page: true
+        });
+        //4-02-09经营情况明细表
+        table.render({
+            elem: '#test09'
+            ,url:'/test/table/demo1.json'
+            ,title: ''
+            ,cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{field:'id', title:'日期', width:80, fixed: 'left', unresize: true, sort: true}
+                ,{field:'username', title:'金额', width:120, edit: 'text'}
+                ,{field:'email', title:'经办人'}
+                ,{field:'sex', title:'操作员'}
+                ,{field:'sex', title:'备注'}
+            ]]
+            ,page: true
+        });
+        //4-03-010资产负债表
+        table.render({
+            elem: '#test010'
+            ,url:'/test/table/demo1.json'
+            ,title: ''
+            ,cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{field:'id', title:'日期', width:80, fixed: 'left', unresize: true, sort: true}
+                ,{field:'username', title:'金额', width:120, edit: 'text'}
+                ,{field:'email', title:'经办人'}
+                ,{field:'sex', title:'操作员'}
+                ,{field:'sex', title:'备注'}
+            ]]
+            ,page: true
+        });
+
+        //监听行工具事件
+        table.on('tool(test)', function(obj){
+            var data = obj.data;
+            //console.log(obj)
+            if(obj.event === 'del'){
+                layer.confirm('真的删除行么', function(index){
+                    obj.del();
+                    layer.close(index);
+                });
+            } else if(obj.event === 'edit'){
+                layer.prompt({
+                    formType: 2
+                    ,value: data.email
+                }, function(value, index){
+                    obj.update({
+                        email: value
+                    });
+                    layer.close(index);
+                });
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

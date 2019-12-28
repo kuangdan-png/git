@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>库存查询</title>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <style type="text/css">
+        .layedit-tool-ul li{
+            display: inline-block;
+            margin: 14px;
+            margin-top: 5px;
+            border:1px solid white;
+            width: 62px;
+            height: 56px;
+        }
+        .layedit-tool-li i{
+            position: relative;
+            left: 10px;
+        }
+
+        .layedit-tool-ul li:hover{
+            border:1px #EBEBEB solid;
+            background: rgba(159, 159, 159, 0.2);
+        }
+        .layeli{
+            position: relative;
+            left: 16px;
+        }
+        #table,#tablese,#tables,#testte1,#testte2,#testte3{
+            display: none;
+        }
+
+    </style>
+</head>
+<body  style="width: 1145px ;height:550px;margin: 5px;border:1px solid black;">
+<div class="layui-tab">
+    <!--导航-->
+    <ul class="layui-tab-title" style="background: #EBEBEB">
+        <li class="layui-this">库存变动情况</li>
+        <li>商品变动情况</li>
+        <li>商品月变动</li>
+    </ul>
+
+    <!--内容-->
+    <div class="layui-tab-content">
+        <!--内容1-->
+        <div class="layui-tab-item layui-show">
+            <!--仓库-->
+            <div style="border: 1px #A0A0A0 solid;background: #EBEBEB; height: 50px;line-height: 50px; margin-left:-10px;">
+
+                <label style="margin-left: 30px">仓库：</label>
+                <select name="orgType" lay-filter="Type_filter" id="wareHoseName" lay-verify="required">
+                    <option value="allWareHouse" selected>所有仓库</option>
+                </select>
+
+                <label>商品类别：</label>
+                <span id="layerDemol1">
+                    <!--value="所有类别"-->
+                    <input type="text" id="comTypeNo" value="所有类别" class="layui" data-method="offset" data-type="auto" name="title" required  lay-verify="required"  autocomplete="off" readonly="readonly" style="width: 100px">
+                    <input type="hidden" id="inputText"/>
+                </span>
+
+                <label>输入商品相关信息查询：</label>
+                <input type="text" id="input1" style="width: 100px">
+
+                <button type="button" id="search" class="layui-btn"
+                        style="background:#C1CEE8;color: #03206C; border:2px;border-radius: 25px;height:26px;line-height: 20px;">查询(F2)</button>
+
+                <input type="checkbox" id="ku" value="yes">不显示库存为零的商品
+
+            </div>
+
+            <!--选项卡-->
+            <div class="layui-tab">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">库存商品汇总表</li>
+                    <li>库存商品明细</li>
+                </ul>
+                <div class="layui-tab-content">
+                    <!--嵌套内容2-->
+                    <div class="layui-tab-item layui-show">
+                        <!--表格-->
+                        <table class="layui-hide" id="test" ></table>
+                    </div>
+                    <!--嵌套内容2-->
+                    <div class="layui-tab-item">
+                        <!--表格-->
+                        <table class="layui-hide" id="test5"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--内容2-->
+        <div class="layui-tab-item">
+            <!--时间-->
+            <div>
+                统计时间：
+                <input type="text"  id="test1" >
+                至
+                <input type="text"  id="test2" >
+                商品名称或编号：
+                <input type="text" name="title" required  lay-verify="required"  autocomplete="off">
+                <button type="button" class="layui-btn" style="background:#C1CEE8;color: #03206C; border:2px;border-radius: 25px;height:26px;line-height: 20px;">查询(F2)</button>
+                <input type="checkbox" >显示禁用商品
+            </div>
+            <!--表格-->
+            <table class="layui-table" style="background: rgba(0,15,101,0.04); position: relative;top:10px"></table>
+            <table class="layui-hide" id="testi5"></table>
+        </div>
+        <!--内容3-->
+        <div class="layui-tab-item">
+            <!--时间-->
+            <div>
+                统计时间：
+                <input type="text"  id="test3" >
+                输入商品资料查询：
+                <input type="text" name="title" required  lay-verify="required"  autocomplete="off">
+                <button type="button" class="layui-btn" style="background:#C1CEE8;color: #03206C; border:2px;border-radius: 25px;height:26px;line-height: 20px;">查询(F2)</button>
+                <input type="checkbox" >隐藏零库存批号
+            </div>
+            <!--选项卡-->
+            <div class="layui-tab">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">变动汇总</li>
+                </ul>
+                <!--内容-->
+                <div class="layui-tab-content">
+                    <!--内容1-->
+                    <div class="layui-tab-item layui-show">
+                        <!--表格-->
+                        <table class="layui-hide" id="testi"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--查找弹出层-->
+<div id="tablese">
+    <div style="padding: 10px 150px;"></div>
+    <p style="margin-left: 40px;">供应商：<input type="text" name="title" required  lay-verify="required"  autocomplete="off" style="width: 150px"></p>
+    <p style="margin-left: 40px;margin-top: 20px;">库存量：<select name="city" lay-verify="">
+        <option></option>
+        <option> = </option>
+        <option> >= </option>
+        <option> <= </option>
+        <option> <> </option>
+    </select>  <input type="text" value="0" name="title" required  lay-verify="required"  autocomplete="off" style="width: 106px"></p>
+    <p style="margin-left: 26px;margin-top: 20px;">所在仓库：<select name="city" lay-verify="" style="width: 155px;">
+        <option>所以仓库</option>
+        <option>主仓库</option>
+        <option>酒仓</option>
+        <option>饮料仓</option>
+    </select></p>
+
+</div>
+
+<!--库存批次弹出层-->
+<div id="table">
+    <div style="border: 1px rgba(0,0,0,0.13) solid;border-radius:5px;background: rgba(159,159,159,0.08)">
+        <p style="margin-left: 20px;">商品信息</p>
+        <p style="margin-left: 30px;">商品编号：<span style="margin-left: 250px;">商品名称：</span></p>
+        <p style="margin-left: 30px;">单&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;位：<span style="margin-left:251px;">规格型号：</span></p>
+    </div>
+    <div style="border: 1px rgba(0,0,0,0.13) solid;height:25px;border-radius:5px;background: rgba(159,159,159,0.08)">
+        <p style="margin-left: 20px;margin-top: 3px;">该商品批次信息（仓库名称：）</p>
+    </div>
+    <table class="layui-hide" id="testi3"></table>
+</div>
+
+<!--进货参考弹出层-->
+<div id="tables">
+    <!--选项卡-->
+    <div class="layui-tab">
+        <ul class="layui-tab-title">
+            <li class="layui-this">进货参考</li>
+            <li>退货参考</li>
+        </ul>
+
+        <div class="layui-tab-content">
+            <!--内容1-->
+            <div class="layui-tab-item layui-show">
+                <!--导航-->
+                <div>
+                    <ul class="layedit-tool-ul">
+                        <li class="layedit-tool-li">
+                            <div id="layerDemol2">
+                                <span class="layeli layui" style="position: relative;left: 2px;" data-method="offset" data-type="auto">
+                                    <i class="layui-icon layui-icon-search" style="font-size: 30px; color: #000000;"></i>
+                                    </br>查询添加
+                                </span>
+                            </div>
+                        </li>
+                        <li class="layedit-tool-li">
+                            <div id="layerDemol3">
+                                <span class="layeli layui" style="position: relative;left: 2px;" data-method="offset" data-type="auto">
+                                    <i class="layui-icon layui-icon-survey" style="font-size: 30px; color: #000000;"></i>
+                                    </br>修改数量
+                                </span>
+                            </div>
+                        </li>
+                        <li class="layedit-tool-li">
+                            <i class="layui-icon layui-icon-close" style="font-size: 30px; color:red;"></i>
+                            </br>删除商品
+                        </li>
+                        <li>
+                             <span class="layeli">
+                                     <i class="layui-icon layui-icon-file-b" style="font-size: 30px; color: #000000;"></i>
+                                 </br>打印
+                             </span>
+                        </li>
+                        <li>
+                             <span class="layeli">
+                                   <i class="layui-icon layui-icon-close-fill" style="font-size: 30px; color: red;"></i>
+                                 </br>退出
+                               </span>
+                        </li>
+                    </ul>
+                </div>
+                <div> <table class="layui-hide" id="testi4"></table></div>
+            </div>
+            <!--内容2-->
+            <div class="layui-tab-item">
+                <!--导航-->
+                <div>
+                    <ul class="layedit-tool-ul">
+                        <li class="layedit-tool-li">
+
+                            <i class="layui-icon layui-icon-search" style="font-size: 30px; color: #000000;"></i>
+                            </br>查询添加
+                        </li>
+                        <li class="layedit-tool-li">
+                            <i class="layui-icon layui-icon-survey" style="font-size: 30px; color: #000000;"></i>
+                            </br>修改数量
+                        </li>
+                        <li class="layedit-tool-li">
+                            <i class="layui-icon layui-icon-close" style="font-size: 30px; color:red;"></i>
+                            </br>删除商品
+                        </li>
+                        <li>
+                            <span class="layeli">
+                                  <i class="layui-icon layui-icon-file-b" style="font-size: 30px; color: #000000;"></i>
+                                </br>打印
+                            </span>
+                        </li>
+                        <li>
+                             <span class="layeli">
+                                    <i class="layui-icon layui-icon-close-fill" style="font-size: 30px; color: red;"></i>
+                                 </br>退出
+                             </span>
+                        </li>
+                    </ul>
+                </div>
+                <div> <table class="layui-hide" id="testi6"></table></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--所有类别弹出层-->
+<div id="testte1" style="border:1px rgba(0,0,0,0.3) solid;height: 190px;
+    width:219px;margin-left: 2px;margin-top: 2px;">
+    <div id="test6"></div>
+</div>
+
+
+<!--修改数量-->
+<div id="testte3">
+    <p style="margin-left: 15px;margin-top: 10px;">商品信息</p>
+    <div style="margin-left:20px;">
+        <p  style="margin-left:20px;margin-top: 10px;">商品编号：<span style="margin-left: 200px">商品名称：</span></p>
+        <p  style="margin-left:20px;margin-top: 10px;">产品规格：<span style="margin-left: 228px">单位：</span></p>
+        <p  style="margin-left:20px;margin-top: 10px;">当前库存：<span style="margin-left: 228px">颜色：</span></p>
+        <p  style="margin-left:20px;margin-top: 10px;">生产厂商：<span style="margin-left: 228px">备注：</span></p>
+    </div>
+    <p  style="margin-left:140px;margin-top: 10px;">参考进货数量：<input type="text" style="width: 50px;"></p>
+    <p style="color: red;margin-left:90px;margin-top: 10px;">(数量只作为一个进货或退货的参考，不修改实际数据库。)</p>
+</div>
+
+<script src="../layui/layui.js"></script>
+<script src="../JQuery/jquery-3.4.1.min.js"></script>
+<script>
+
+    //导航
+    layui.use('element', function () {
+        var element = layui.element;
+
+        //获取hash来切换选项卡，假设当前地址的hash为lay-id对应的值
+        var layid = location.hash.replace(/^#test1=/, '');
+        element.tabChange('test1', layid); //假设当前地址为：http://a.com#test1=222，那么选项卡会自动切换到“发送消息”这一项
+
+        //监听Tab切换，以改变地址hash值
+        element.on('tab(test1)', function () {
+            location.hash = 'test1=' + this.getAttribute('lay-id');
+        });
+    });
+
+    //时间
+    layui.use('laydate', function () {
+        var laydate = layui.laydate;
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#test1' //指定元素
+            , value: new Date()
+        });
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#test2' //指定元素
+            , value: new Date()
+        });
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#test3' //指定元素
+            , value: new Date()
+        });
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#test4' //指定元素
+            , value: new Date()
+        });
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#testt1' //指定元素
+            , value: new Date()
+        });
+    });
+
+    //弹出层
+    layui.use('layer', function () { //独立版的layer无需执行这一句
+        var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
+        //触发事件
+        //查找弹出层
+        var active = {
+            offset: function (othis) {
+                var type = othis.data('type')
+                    , text = othis.text();
+                layer.open({
+                    type: 1
+                    , title: '查找'
+                    , offset: type //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+                    , id: 'layerDemo' + type //防止重复弹出
+                    , content: $('#tablese')
+                    , btn: ['确定', '退出']
+                    , btnAlign: 'c' //按钮居中
+                    , shade: 0 //不显示遮罩
+                    , yes: function () {
+                        layer.closeAll();
+                    }
+                });
+            }
+        };
+        $('#layerDemo .layui').on('click', function () {
+            var othis = $(this), method = othis.data('method');
+            active[method] ? active[method].call(this, othis) : '';
+        });
+    });
+
+    //进货参考弹出层
+    layui.use('layer', function () { //独立版的layer无需执行这一句
+        var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
+        //触发事件
+        var active = {
+            offset: function (othis) {
+                var type = othis.data('type')
+                    , text = othis.text();
+
+                layer.open({
+                    type: 1
+                    , title: '进/退货参考'
+                    , offset: type //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+                    , area: ['900px', '600px']
+                    , id: 'layerDemo1' + type //防止重复弹出
+                    , content: $('#tables')
+                    , btnAlign: 'c' //按钮居中
+                    , shade: 0 //不显示遮罩
+                    , yes: function () {
+                        layer.closeAll();
+                    }
+                });
+            }
+        };
+        $('#layerDemo1 .layui').on('click', function () {
+            var othis = $(this), method = othis.data('method');
+            active[method] ? active[method].call(this, othis) : '';
+        });
+
+    });
+
+    //弹出库存批次层
+    layui.use(['layer','table','element'], function () { //独立版的layer无需执行这一句
+        var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
+        var element = layui.element;
+        var $ = layui.$;
+        var layer = layui.layer;
+        var table = layui.table;
+        var form = layui.form;
+        // 自动获取仓库的下拉框
+        $.ajax({
+            url: '/allocationTableHandler/searchWareHourseInfo.action',
+            dataType: 'json',
+            data: {'state': 0},	//查询状态为正常的所有机构类型
+            type: 'post',
+            success: function (data) {
+                var count=0;
+                $.each(data, function (index, item) {
+                    count++;
+                    $('#wareHoseName').append(new Option(item.warName, item.warID));// 下拉菜单里添加元素
+                });
+                layui.form.render("select");
+            }
+        });
+        //触发事件
+        var active = {
+            offset: function (othis) {
+                var type = othis.data('type')
+                    , text = othis.text();
+                layer.open({
+                    type: 1
+                    , title: '商品批次信息'
+                    , offset: type //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+                    , area: ['600px', '360px']
+                    , id: 'layerDemo1' + type //防止重复弹出
+                    , content: $('#table')
+                    , btn: '退出'
+                    , btnAlign: 'c' //按钮居中
+                    , shade: 0 //不显示遮罩
+                    , yes: function () {
+                        layer.closeAll();
+                    }
+                });
+            }
+        };
+        $('#layerDemo2 .layui').on('click', function () {
+            var othis = $(this), method = othis.data('method');
+            active[method] ? active[method].call(this, othis) : '';
+        });
+    });
+
+    //所有类别弹出层
+    layui.use(['layer','table'], function () { //独立版的layer无需执行这一句
+        var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
+        var active = {
+            offset: function (othis) {
+                var type = othis.data('type')
+                    , text = othis.text();
+                $.ajax({
+                    type: "POST",
+                    url: "/systemsetup/searchCommodityParentType.action?seniorSeclct=null",
+                    success: function (msg) {
+                        layui.use('tree', function () {
+                            var tree = layui.tree;
+                            //渲染
+                            var inst1 = tree.render({
+                                elem: '#test6'  //绑定元素
+                                , data: msg
+                                , edit: ['add', 'update', 'del']
+                                , click: function(d){
+                                    var comTypeName = d.data.title;
+                                    $('#comTypeNo').val(comTypeName);
+                                    $('#inputText').val(comTypeName);
+                                }
+                            });
+                        });
+                    }
+                });
+                layer.open({
+                    type: 1
+                    , title: false
+                    , closeBtn: 0
+                    , end: true
+                    , offset: ['160px', '240px']
+                    , area: ['226px', '260px']
+                    , id: 'layerDemo1' + type //防止重复弹出
+                    , content: $('#testte1')
+                    , btn: ['确定', '退出']
+                    , btnAlign: 'c' //按钮居中
+                    , shade: 0 //不显示遮罩
+                    , yes: function () {
+                        layer.closeAll();
+                    }
+                });
+            }
+        };
+        $('#layerDemol1 .layui').on('click', function () {
+            var othis = $(this), method = othis.data('method');
+            active[method] ? active[method].call(this, othis) : '';
+        });
+    });
+
+    //修改数量弹出层
+    layui.use(['layer','table'], function () { //独立版的layer无需执行这一句
+        var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
+        var table =layui.
+        //触发事件
+        $("#testte4").click(function () {
+            var info=$("#input").val();
+            window.alert(info);
+            table.reload('testi7', {
+                where: {'redName': info} //studentName :lh 设定异步数据接口的额外参数
+            });
+        });
+
+        //查找弹出层
+        var active = {
+            offset: function (othis) {
+                var type = othis.data('type')
+                    , text = othis.text();
+                layer.open({
+                    type: 1
+                    , title: '修改数量'
+                    , offset: type //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+                    , btn: ['确定', '退出']
+                    , area: ['583px', '338px']
+                    , id: 'layerDemo' + type //防止重复弹出
+                    , content: $('#testte3')
+                    , btnAlign: 'c' //按钮居中
+                    , shade: 0 //不显示遮罩
+                    , yes: function () {
+                        layer.closeAll();
+                    }
+                });
+            }
+        };
+        $('#layerDemol3 .layui').on('click', function () {
+            var othis = $(this), method = othis.data('method');
+            active[method] ? active[method].call(this, othis) : '';
+        });
+    });
+    //表格
+    layui.use(['table','form'], function () {
+        var table = layui.table;
+        var form = layui.form;
+        //库存商品汇总表
+        table.render({
+            elem: '#test'
+            , url: '/allocationTableHandler/searchAllocationTable.action'
+            , method: 'post'
+            ,totalRow: true
+            , cellMinWidth: 70 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            , where:{duo5:"yes"}
+            , cols: [[
+                {templet: '<div>{{d.commodity.comId}}</div>', title: '商品编号', sort: true,totalRowText: '品种合计'}
+                , {templet: '<div>{{d.commodity.comName}}</div>', title: '商品名称', sort: true}
+                , {templet: '<div>{{d.repNumber}}</div>', title: '库存量', sort: true}
+                , {templet: '<div>{{d.reqTotality}}</div>', title: '销售总数', sort: true}
+                , {templet: '<div>{{d.reqPrice}}</div>', title: '成本均价', sort: true}
+                , {templet: '<div>{{d.commodity.comPrice}}</div>', title: '预设售价', sort: true}
+                , {templet: '<div>{{d.commodity.comUnit}}</div>', title: '单位', sort: true}
+                , {templet: '<div>{{d.commodity.comProduct}}</div>', title: '产品规格', sort: true}
+                , {templet: '<div>{{d.commodity.comApproval}}</div>', title: '批准文号', sort: true}
+                , {templet: '<div>{{d.commodity.manufacturer.manName}}</div>', title: '生产厂商', sort: true}
+                , {field: '<div>{{d.commodity.comRemarks}}</div>', title: '备注'}
+            ]]
+            ,page: true
+            , response: {
+                statusCode: 0 //重新规定成功的状态码为 200，table 组件默认为 0
+            }, parseData: function (res) { //将原始数据解析成 table 组件所规定的数据
+                return {
+                    "code": res.status, //解析接口状态
+                    "msg": res.msg, //解析提示文本
+                    "count": res.count, //解析数据长度
+                    "data": res.row//解析数据列表
+                };
+            }
+            ,height:350
+            ,limits:[1,5,10]
+        });
+        $("#ku").click(function () {
+            var wareHouseNo = $('#wareHoseName').val();
+            var comTypeId = $('#inputText').val();
+            if(comTypeId=="所有类别"){
+                comTypeId='';
+            }
+            var comName=$("#input1").val();
+            var showZero = $("#ku").val();
+            if($('#ku').prop("checked")){
+                showZero="no";
+            }
+            //alert(wareHouseNo+" "+comTypeId+" "+comName+" "+showZero);
+            table.reload('test', {
+                where: {comId:wareHouseNo, comTypeId:comTypeId, comName: comName, duo5:showZero} //studentName :lh 设定异步数据接口的额外参数
+            });
+            table.reload('test5', {
+                where: {comId:wareHouseNo, comTypeId:comTypeId, comName: comName, duo5:showZero} //studentName :lh 设定异步数据接口的额外参数
+            });
+        });
+
+        $("#search").click(function () {
+            var wareHouseNo = $('#wareHoseName').val();
+            var comTypeId = $('#inputText').val();
+            if(comTypeId=="所有类别"){
+                comTypeId='';
+            }
+            var comName=$("#input1").val();
+            var showZero = $("#ku").val();
+            if($('#ku').prop("checked")){
+                showZero="no";
+            }
+            //alert(wareHouseNo+" "+comTypeId+" "+comName+" "+showZero);
+            table.reload('test', {
+                where: {comId:wareHouseNo, comTypeId:comTypeId, comName: comName, duo5:showZero} //studentName :lh 设定异步数据接口的额外参数
+            });
+            table.reload('test5', {
+                where: {comId:wareHouseNo, comTypeId:comTypeId, comName: comName, duo5:showZero} //studentName :lh 设定异步数据接口的额外参数
+            });
+        });
+        //库存商品明细
+        table.render({
+            elem: '#test5'
+            , url: '/allocationTableHandler/searchAllocationTable.action'
+            , method: 'post'
+            , where:{duo5:"yes"}
+            , cellMinWidth: 65 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            , cols: [[
+                {templet: '<div>{{d.commodity.comId}}</div>', title: '商品编号',width:88}
+                , {templet: '<div>{{d.commodity.comName}}</div>', title: '商品名称',width:88}
+                , {templet: '<div>{{d.category.title}}</div>', title: '商品类别', sort: true,width:100}
+                , {templet: '<div>{{d.commodity.comUnit}}</div>', title: '单位', sort: true}
+                , {templet: '<div>{{d.commodity.comProduct}}</div>', title: '产品规格', sort: true} //minWidth：局部定义当前单元格的最小宽度，layui 2.2.1 新增
+                , {templet: '<div>{{d.commodity.comApproval}}</div>', title: '批准文号', sort: true}
+                , {templet: '<div>{{d.commodity.manufacturer.manName}}</div>', title: '生产厂商', sort: true,width:100}
+                , {templet: '<div>{{layui.util.toDateString(d.commodity.comQuality,"yyyy-MM-dd")}}</div>', title: '有效期',width:120}
+                , {templet: '<div>{{d.repNumber}}</div>', title: '库存数量', sort: true}
+                , {templet: '<div>{{d.reqPrice}}</div>', title: '成本均价', sort: true}
+                , {templet:'<div>{{d.warehouse.warName}}</div>', title: '所在仓库', sort: true,width:80}
+                , {field: 'warComment', title: '备注'}
+            ]],page: true
+            , response: {
+                statusCode: 0 //重新规定成功的状态码为 200，table 组件默认为 0
+            }, parseData: function (res) { //将原始数据解析成 table 组件所规定的数据
+                return {
+                    "code": res.status, //解析接口状态
+                    "msg": res.msg, //解析提示文本
+                    "count": res.count, //解析数据长度
+                    "data": res.row//解析数据列表
+                };
+            },height:350
+            ,limits:[1,5,10]
+        });
+        //
+        table.render({
+            elem: '#testi5'
+            , url: '/allocationTableHandler/searchAllocationTable.action'
+            , cellMinWidth: 65 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            , cols: [[
+                {templet: '<div>{{d.commodity.comId}}</div>', title: '商品编号'}
+                , {templet: '<div>{{d.commodity.comName}}</div>', title: '商品名称'}
+                , {templet: '<div>{{d.repNumber}}</div>', title: '库存数量', sort: true}
+                , {templet: '<div>{{d.commodity.manufacturer.manName}}</div>', title: '生产厂商', sort: true}
+                , {templet: '<div>{{d.commodity.comProduct}}</div>', title: '产品规格', sort: true} //minWidth：局部定义当前单元格的最小宽度，layui 2.2.1 新增
+                , {field: 'experience', title: '采购数量', sort: true}
+                , {field: 'score', title: '退货数量', sort: true}
+                , {field: 'classify', title: '合计数量'}
+                , {field: 'wealth', title: '销售数量', sort: true}
+                , {field: 'classify', title: '退货数量'}
+                , {field: 'classify', title: '合计数量'}
+            ]],page: true
+            , response: {
+                statusCode: 0 //重新规定成功的状态码为 200，table 组件默认为 0
+            }, parseData: function (res) { //将原始数据解析成 table 组件所规定的数据
+                return {
+                    "code": res.status, //解析接口状态
+                    "msg": res.msg, //解析提示文本
+                    "count": res.count, //解析数据长度
+                    "data": res.row//解析数据列表
+                };
+            },height:430
+        });
+        table.render({
+            elem: '#testi'
+            , url: '/allocationTableHandler/searchAllocationTable.action'
+            , cellMinWidth: 65 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            , cols: [[
+                {templet: '<div>{{d.commodity.comId}}</div>', title: '商品编号'}
+                , {templet: '<div>{{d.commodity.comName}}</div>', title: '商品名称'}
+                , {templet: '<div>{{d.commodity.comUnit}}</div>', title: '单位', sort: true}
+                , {templet: '<div>{{d.commodity.comProduct}}</div>', title: '产品规格', sort: true} //minWidth：局部定义当前单元格的最小宽度，layui 2.2.1 新增
+                , {templet: '<div>{{d.commodity.manufacturer.manName}}</div>', title: '生产厂商', sort: true}
+                , {templet: '', title: '供货商', sort: true}
+                , {templet: 'classify', title: '上月库存'}
+                , {templet: 'wealth', title: '本月采购', sort: true}
+                , {templet: 'classify', title: '本月销售'}
+                , {templet: '<div>{{d.repNumber}}</div>', title: '本月库存', sort: true}
+            ]],page: true
+            , response: {
+                statusCode: 0 //重新规定成功的状态码为 200，table 组件默认为 0
+            }, parseData: function (res) { //将原始数据解析成 table 组件所规定的数据
+                return {
+                    "code": res.status, //解析接口状态
+                    "msg": res.msg, //解析提示文本
+                    "count": res.count, //解析数据长度
+                    "data": res.row//解析数据列表
+                };
+            }
+            ,height:380
+        });
+        table.render({
+            elem: '#testi1'
+            , url: ''
+            , cellMinWidth: 65 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            , cols: [[
+                {field: 'id', title: '商品编号'}
+                , {field: 'username', title: '商品名称'}
+                , {field: 'sex', title: '剂型', sort: true}
+                , {field: 'city', title: '单位'}
+                , {field: 'sign', title: '规格'} //minWidth：局部定义当前单元格的最小宽度，layui 2.2.1 新增
+                , {field: 'experience', title: '生产厂商', sort: true}
+                , {field: 'score', title: '供货商', sort: true}
+                , {field: 'classify', title: '批号'}
+                , {field: 'classify', title: '上月库存'}
+                , {field: 'wealth', title: '本月采购', sort: true}
+                , {field: 'classify', title: '本月销售'}
+                , {field: 'classify', title: '本月库存'}
+            ]],height:350
+        });
+        table.render({
+            elem: '#testi2'
+            , url: ''
+            , cellMinWidth: 65 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            , cols: [[
+                {field: 'id', title: '商品编号'}
+                , {field: 'username', title: '商品名称'}
+                , {field: 'sex', title: '剂型', sort: true}
+                , {field: 'city', title: '单位'}
+                , {field: 'sign', title: '规格'} //minWidth：局部定义当前单元格的最小宽度，layui 2.2.1 新增
+                , {field: 'experience', title: '生产厂商', sort: true}
+                , {field: 'score', title: '供货商', sort: true}
+                , {field: 'classify', title: '批号'}
+                , {field: 'classify', title: '上月库存'}
+                , {field: 'wealth', title: '本月采购', sort: true}
+                , {field: 'classify', title: '本月销售'}
+                , {field: 'classify', title: '本月库存'}
+            ]]
+        });
+        table.render({
+            elem: '#testi3'
+            , url: '/allocationTableHandler/searchAllocationTable.action'
+            , cellMinWidth: 65 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            , cols: [[
+                {field: 'id', title: '商品编号'}
+                , {field: 'username', title: '商品名称'}
+                , {field: 'sex', title: '产品批号', sort: true}
+                , {field: 'city', title: '有效期至'}
+                , {field: 'sign', title: '进货日期'} //minWidth：局部定义当前单元格的最小宽度，layui 2.2.1 新增
+                , {field: 'experience', title: '库存数量', sort: true}
+            ]]
+        });
+        //进货参考
+        table.render({
+            elem: '#testi4'
+            , url: '/allocationTableHandler/searchReceiptsDetailed.action'
+            , cellMinWidth: 40 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            , cols: [[
+                {templet: '<div>{{d.redProcutsNo}}</div>', title: '商品编号', sort: true}
+                , {templet: '<div>{{d.redName}}</div>', title: '商品名称', sort: true}
+                , {templet: '<div>{{d.redUnit}}</div>', title: '单位', sort: true}
+                , {templet: '<div>{{d.redredduct}}</div>', title: '产品规格', sort: true}
+                , {templet: '<div>{{d.redManufactName}}</div>', title: '生产厂商', sort: true} //minWidth：局部定义当前单元格的最小宽度，layui 2.2.1 新增
+                , {templet: '<div>{{d.supplier.supName}}</div>', title: '供货商', sort: true}
+                , {templet: '<div>{{d.redQuanStock}}</div>', title: '参考进货数量', sort: true}
+                , {templet: '<div>{{d.redQuanStock}}</div>', title: '当前库存数量', sort: true}
+            ]], response: {
+                statusCode: 0 //重新规定成功的状态码为 200，table 组件默认为 0
+            }, parseData: function (res) { //将原始数据解析成 table 组件所规定的数据
+                return {
+                    "code": res.status, //解析接口状态
+                    "msg": res.msg, //解析提示文本
+                    "count": res.count, //解析数据长度
+                    "data": res.row//解析数据列表
+                };
+            }
+        });
+        table.render({
+            elem: '#testi6'
+            , url: ''
+            , cellMinWidth: 65 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            , cols: [[
+                {field: 'id', title: '商品编号'}
+                , {field: 'username', title: '商品名称'}
+                , {field: 'sex', title: '单位', sort: true}
+                , {field: 'city', title: '产品规格'}
+                , {field: 'sign', title: '生产厂商'} //minWidth：局部定义当前单元格的最小宽度，layui 2.2.1 新增
+                , {field: 'experience', title: '供货商', sort: true}
+                , {field: 'sign', title: '参考进货数量'}
+                , {field: 'sign', title: '当前库存数量'}
+            ]]
+        });
+        table.render({
+            elem: '#testi7'
+            , url: '/allocationTableHandler/searchReceiptsDetailed.action'
+            , cellMinWidth: 65 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            , cols: [[
+                {templet: '<div>{{d.redProcutsNo}}</div>', title: '商品编号'}
+                , {templet: '<div>{{d.redName}}</div>', title: '商品名称'}
+                , {templet: '<div>{{d.redUnit}}</div>', title: '单位', sort: true}
+                , {templet: '<div>{{d.redredduct}}</div>', title: '产品规格'}
+                , {templet: '<div>{{d.redManufactName}}</div>', title: '生产厂商'} //minWidth：局部定义当前单元格的最小宽度，layui 2.2.1 新增
+                , {templet: '<div>{{d.supplier.supName}}</div>', title: '供货商', sort: true}
+                , {templet: '<div>{{d.redQuanStock}}</div>', title: '参考进货数量'}
+                , {templet: '<div>{{d.redQuanStock}}</div>', title: '当前库存数量'}
+            ]], response: {
+                statusCode: 0 //重新规定成功的状态码为 200，table 组件默认为 0
+            }, parseData: function (res) { //将原始数据解析成 table 组件所规定的数据
+                return {
+                    "code": res.status, //解析接口状态
+                    "msg": res.msg, //解析提示文本
+                    "count": res.count, //解析数据长度
+                    "data": res.row//解析数据列表
+                };
+            }
+        });
+    });
+
+
+</script>
+</body>
+</html>

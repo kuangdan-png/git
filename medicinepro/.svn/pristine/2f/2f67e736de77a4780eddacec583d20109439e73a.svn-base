@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="return.crud">
+
+    <!--1、查询仓库下拉列表-->
+    <select id="allwarHName" resultMap="warNamemap">
+        SELECT * FROM warehouse
+        WHERE warForbidNo=0
+    </select>
+    <!--2、客户名称下拉列表-->
+    <select id="searchclientList" resultMap="clientListmap">
+        SELECT * FROM CLIENT c,receipts_detailed r
+        WHERE c.cliID=r.duo1
+        AND cliID IN (SELECT duo1 FROM receipts_detailed)
+        AND r.duo4>0
+        GROUP BY cliName
+    </select>
+    <!--3、根据商品ID或者名称和客户ID与单据号模糊查询可退货商品(可退数量大于0)-->
+    <select id="cominfoByIONgc" parameterType="commodity" resultMap="salecominfomap">
+         SELECT * FROM commodity c,receipts_detailed r
+         WHERE c.comId=r.redProcutsNo
+         AND r.duo4>0
+         AND comId IN (SELECT redProcutsNo FROM receipts_detailed WHERE duo1 = #{duo4})
+         AND r.redOdd=#{duo5}
+         AND (comId LIKE concat('%',#{duo2},'%')
+         OR comName LIKE concat('%',#{duo2},'%'))
+    </select>
+    <!--4、查询所编辑的商品退货数量是否大于销售数量（销售单据）-->
+    <select id="ifReturnNumBigRepertory" parameterType="receiptsDetailed" resultType="java.lang.Integer">
+        SELECT duo4 FROM receipts_detailed
+        WHERE redProcutsNo=#{duo6}
+        AND redDocumentTypes=(select retNo FROM receiptstype where retName='销售单号')
+        AND redOdd=#{duo7}
+    </select>
+    <!--5、新增退货主表信息-->
+    <insert id="comSaleinfoInsert" parameterType="receipts">
+        INSERT INTO receipts ( recNo,
+        recOdd,recDocumentTypes,recDate,
+        recEmployeeNo,recRemark,recTotalNumber,redDepotNo)
+        VALUES
+        (#{recNo},#{recOdd},#{recDocumentTypes},
+        #{recDateSale},#{recEmployeeNo},#{recRemark},#{recTotalNumber},#{redDepotNo})
+    </insert>
+    <!--6、新增退货单据明细表-->
+    <insert id="comSaleTableinfoInsert" parameterType="receiptsdetailed">
+        INSERT INTO receipts_detailed (redNo,redOdd,redProcutsNo,redName,redUnit,redredduct,redPermitNo,redPrice,redCount,redTotalPrice,redDepotNo,redComment,redProductTypeNo,redRecNo,redDocumentTypes,duo1,duo2)
+        VALUES
+        (#{redNo},#{redOdd},#{redProcutsNo},#{redName},#{redUnit},#{redredduct},#{redPermitNo},#{redPrice},#{redCount},#{redPrice}*#{redCount},#{redDepotNo},#{redComment},#{redProductTypeNo},#{redRecNo},(SELECT retNo FROM receiptstype WHERE `retName`='退货单号'),#{duo1},#{duo5});
+    </insert>
+    <!--7、保存退货单据的商品ID代入相应出货仓库表更新库存-->
+    <update id="updateWoreHouse" parameterType="commodity">
+        UPDATE repertoryson SET repNumber = repNumber+#{duo1}
+        WHERE repComId=#{comId}
+        AND reqWareNo=#{duo4}
+    </update>
+    <!--8、更新可退货数量-->
+    <update id="updateCanReturnNu" parameterType="receiptsDetailed">
+        UPDATE receipts_detailed SET duo4 = duo4-#{duo4}
+        WHERE redProcutsNo=#{duo6}
+        AND redOdd=#{duo7}
+    </update>
+    <!--9、保存退货单据的商品ID代入相应出货仓库表更新库存（根据收货仓库ID增加库存 如收货仓库没有退货商品则新增一条数据 库存为退货数）-->
+    <insert id="returnWoreHouseInsert" parameterType="repertorySon">
+        INSERT INTO repertoryson (repId,
+         repComId,
+         repProName,
+         repNumber,
+         reqWareNo,
+         duo1)
+        VALUES
+        (#{repId},#{repComId},
+        #{repProName},#{repNumber},#{reqWareNo},#{duo1});
+    </insert>
+    <!--10、根据客户名称查询 单号下拉列表-->
+    <select id="returnNumByCliID" parameterType="String"  resultMap="RDmap">
+        SELECT DISTINCT * FROM receipts_detailed where redOdd in(select recOdd from receipts inner join receiptstype on recDocumentTypes=retNo
+        where retNo='RN00004')
+        and duo1=#{cliId}
+        and duo4>0
+        GROUP BY redodd
+    </select>
+    <resultMap id="salecominfomap" type="commodity">
+        <!--mybatis如何处理联合主键(复合主键)?-->
+        <id column="comId" property="comId"/>
+        <result column="comName" property="comName"/>
+        <result column="comSimpleCode" property="comSimpleCode"/>
+        <result column="comTypeId" property="comTypeId"/>
+        <result column="comGenericName" property="comGenericName"/>
+        <result column="comBarCode" property="comBarCode"/>
+        <result column="comUnit" property="comUnit"/>
+        <result column="comEpherine" property="comEpherine"/>
+        <result column="comElectonic" property="comElectonic"/>
+        <result column="comProduct" property="comProduct"/>
+        <result column="comMedicame" property="comMedicame"/>
+        <result column="comRegister" property="comRegister"/>
+        <result column="comApproval" property="comApproval"/>
+        <result column="comQuality" property="comQuality"/>
+        <result column="comState" property="comState"/>
+        <result column="comSpecial" property="comSpecial"/>
+        <result column="comPurchase" property="comPurchase"/>
+        <result column="comPrice" property="comPrice"/>
+        <result column="comManufact" property="comManufact"/>
+        <result column="comRemarks" property="comRemarks"/>
+        <result column="comMinKuNumber" property="comMinKuNumber"/>
+        <result column="duo1" property="duo1"/>
+        <result column="duo2" property="duo2"/>
+        <result column="duo3" property="duo3"/>
+        <result column="duo4" property="duo4"/>
+    </resultMap>
+    <resultMap id="warNamemap" type="warehouse">
+        <id column="warID" property="warID"/>
+        <result column="warName" property="warName"/>
+        <result column="employeesNo" property="employeesNo"/>
+        <result column="warPhone" property="warPhone"/>
+        <result column="warAddressNo" property="warAddressNo"/>
+        <result column="warAddress" property="warAddress"/>
+        <result column="warDefault" property="warDefault"/>
+        <result column="warForbidNo" property="warForbidNo"/>
+        <result column="warComment" property="warComment"/>
+        <result column="repNumber" property="repNumber"/>
+        <result column="warTotalValue" property="warTotalValue"/>
+        <result column="warCurrent" property="warCurrent"/>
+        <result column="warLowest" property="warLowest"/>
+        <result column="duo1" property="duo1"/>
+        <result column="duo2" property="duo2"/>
+        <result column="duo3" property="duo3"/>
+    </resultMap>
+    <resultMap id="clientListmap" type="client">
+        <id column="cliID" property="cliID"/>
+        <result column="cliName" property="cliName"/>
+        <result column="cliContacts" property="cliContacts"/>
+        <result column="cliPhone" property="cliPhone"/>
+        <result column="cliPhone" property="cliPhone"/>
+        <result column="cliAddress" property="cliAddress"/>
+        <result column="cliType" property="cliType"/>
+        <result column="cliArea" property="cliArea"/>
+        <result column="cliRemarks" property="cliRemarks"/>
+        <result column="duo1" property="duo1"/>
+        <result column="duo1" property="duo2"/>
+        <result column="duo1" property="duo3"/>
+    </resultMap>
+    <resultMap id="RDmap" type="ReceiptsDetailed">
+        <id column="redNo" property="redNo"/>
+        <result column="redOdd" property="redOdd"/>
+        <result column="redProcutsNo" property="redProcutsNo"/>
+        <result column="redName" property="redName"/>
+        <result column="redUnit" property="redUnit"/>
+        <result column="redredduct" property="redredduct"/>
+        <result column="redPermitNo" property="redPermitNo"/>
+        <result column="redDate" property="redDate"/>
+        <result column="redValidUntil" property="redValidUntil"/>
+        <result column="redPrice" property="redPrice"/>
+        <result column="redCount" property="redCount"/>
+        <result column="redManufact" property="redManufact"/>
+        <result column="redManufactName" property="redManufactName"/>
+        <result column="dredPrepriceuo1" property="dredPrepriceuo1"/>
+        <result column="redTotalPrice" property="redTotalPrice"/>
+        <result column="redSupplierNo" property="redSupplierNo"/>
+        <result column="redPutNo" property="redPutNo"/>
+        <result column="redDepotNo" property="redDepotNo"/>
+        <result column="redredchaseDate" property="redredchaseDate"/>
+        <result column="redComment" property="redComment"/>
+        <result column="redReturnDate" property="redReturnDate"/>
+        <result column="redDocumentTypes" property="redDocumentTypes"/>
+        <result column="redProductTypeNo" property="redProductTypeNo"/>
+        <result column="redProductTypeName" property="redProductTypeName"/>
+        <result column="redRecNo" property="redRecNo"/>
+        <result column="redZhe" property="redZhe"/>
+        <result column="redModel" property="redModel"/>
+        <result column="redQuanStock" property="redQuanStock"/>
+    </resultMap>
+</mapper>

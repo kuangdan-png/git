@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>美萍医药管理系统-2019v12</title>
+    <link rel="stylesheet" href="layui/css/layui.css">
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <style>
+        .layui-form{
+            display: block;
+            background-color: rgba(0,0,0,0.4);
+            padding: 20px;
+            position: absolute;
+            top:250px;
+            left:550px;
+        }
+    </style>
+
+</head>
+<body>
+<img src="images/login_images/o.jpg" height="667px" width="1388px"/>
+<form class="layui-form" action="/userManager/excuteLogin.action" style="margin: 0 auto;width: 380px">
+    <div class="layui-form-item">
+        <div class="layui-input-block" style="color:white;width: 250px;margin-top: 10px;text-space:10px;margin-left:80px;font-size: 20px;font-weight: bold">
+            欢迎登录美萍医药管理系统
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="layui-icon layui-icon-username" style="color: white"></i></label>
+        <div class="layui-input-block" style="width: 190px">
+            <input type="text" name="userName" required  lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="layui-icon layui-icon-password" style="color: white"></i></label>
+        <div class="layui-input-inline">
+            <input type="password" name="passWord" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="formDemo">登录</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+</body>
+</html>

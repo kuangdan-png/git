@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="medicinepro.commodity">
+  <select id="searchCommodity" resultMap="commodity" parameterType="com.medicine.util.Page">
+         SELECT comId,comName,comSimpleCode,comType.catName title,comGenericName,comUnit,comstarTime comBarCode,
+    comEpherine,comElectonic,comProduct,comEndTime comQuality,comMedicame,comRegister,comApproval,comState,
+    comSpecial,comPurchase,comPrice,man.manName,comRemarks,comMinKuNumber,man.manId,su.supName,su.supId FROM commodity c
+    INNER JOIN category comType
+    ON comType.catId=c.comTypeId
+    INNER JOIN manufacturer man
+    ON c.comManufact=man.manId
+    INNER JOIN supplier su
+    ON su.supId=c.comSupplierNo
+       WHERE c.comState=0
+    limit #{page},#{rows}
+
+  </select>
+    <select id="searchCommodityAll" resultMap="commodity">
+       SELECT comId,comName,comSimpleCode,comType.catName title,comGenericName,comUnit,comstarTime comBarCode,
+    comEpherine,comElectonic,comProduct,comEndTime comQuality,comMedicame,comRegister,comApproval,comState,
+    comSpecial,comPurchase,comPrice,man.manName,comRemarks,comMinKuNumber,man.manId,su.supName,su.supId FROM commodity c
+    INNER JOIN category comType
+    ON comType.catId=c.comTypeId
+    INNER JOIN manufacturer man
+    ON c.comManufact=man.manId
+    INNER JOIN supplier su
+    ON su.supId=c.comSupplierNo
+       WHERE c.comState=0
+    </select>
+    <select id="searchCommodityForTypeAll" resultMap="commodity"  parameterType="java.util.Map">
+        SELECT comId,comName,comSimpleCode,comType.catName title,comGenericName,comUnit,comstarTime comBarCode,
+        comEpherine,comElectonic,comProduct,comEndTime comQuality,comMedicame,comRegister,comApproval,comState,
+        comSpecial,comPurchase,comPrice,man.manName,comRemarks,comMinKuNumber,man.manId,su.supName,su.supId FROM commodity c
+        INNER JOIN category comType
+        ON comType.catId=c.comTypeId
+        INNER JOIN manufacturer man
+        ON c.comManufact=man.manId
+        INNER JOIN supplier su
+        ON su.supId=c.comSupplierNo
+        where (comType.catId= #{siteTag} or comType.catParentId  = #{siteTag}) and c.comState=0
+        limit
+        <foreach collection="list" item="item" index="index" separator=",">
+        #{item}
+    </foreach>
+
+    </select>
+    <select id="searchCommodityAll2" resultMap="commodity" parameterType="string">
+         SELECT comId,comName,comSimpleCode,comType.catName title,comGenericName,comUnit,comstarTime comBarCode,
+    comEpherine,comElectonic,comProduct,comEndTime comQuality,comMedicame,comRegister,comApproval,comState,
+    comSpecial,comPurchase,comPrice,man.manName,comRemarks,comMinKuNumber,man.manId,su.supName,su.supId FROM commodity c
+    INNER JOIN category comType
+    ON comType.catId=c.comTypeId
+    INNER JOIN manufacturer man
+    ON c.comManufact=man.manId
+    INNER JOIN supplier su
+    ON su.supId=c.comSupplierNo
+         where comType.catId= #{siteTag} or comType.catParentId  = #{siteTag} and c.comState=0
+    </select>
+    <resultMap id="commodity" type="commodity">
+        <id column="comId" property="comId"></id>
+        <result column="comName" property="comName"></result>
+        <result column="comSimpleCode" property="comSimpleCode"></result>
+        <result column="comGenericName" property="comGenericName"></result>
+<result property="comBarCode" column="comBarCode"></result>
+        <result column="comUnit" property="comUnit"></result>
+        <result column="comEpherine" property="comEpherine"></result>
+        <result column="comElectonic" property="comElectonic"></result>
+        <result column="comProduct" property="comProduct"></result>
+        <result column="comMedicame" property="comMedicame"></result>
+        <result column="comRegister" property="comRegister"></result>
+        <result column="comApproval" property="comApproval"></result>
+        <result column="comQuality" property="comQuality"></result>
+
+        <result column="comState" property="comState"></result>
+        <result column="comSpecial" property="comSpecial"></result>
+        <result column="comPurchase" property="comPurchase"></result>
+        <result column="comPrice" property="comPrice"></result>
+        <result column="comRemarks" property="comRemarks"></result>
+        <result column="comMinKuNumber" property="comMinKuNumber"></result>
+        <association property="category" javaType="category" resultMap="medicinepro.commodityType.categoryt">
+        </association>
+        <association property="manufacturer" javaType="manufacturer" resultMap="manufacturer">
+        </association>
+        <association property="supplier" javaType="supplier" resultMap="supplier">
+        </association>
+    </resultMap>
+
+    <resultMap id="manufacturer" type="manufacturer">
+        <id column="manId" property="manId"/>
+        <result column="manName" property="manName"/>
+        <result column="manTelPhe" property="manTelPhe"/>
+        <result column="manAddressNo" property="manAddressNo"/>
+        <result column="manAddress" property="manAddress"/>
+        <result column="manEmail" property="manEmail"/>
+        <result column="manRemarks" property="manRemarks"/>
+        <result column="duo1" property="duo1"/>
+        <result column="duo2" property="duo2"/>
+    </resultMap>
+    <resultMap id="supplier" type="supplier">
+        <id column="supID" property="supID"/>
+        <result column="supName" property="supName"/>
+        <result column="supLinkman" property="supLinkman"/>
+        <result column="supPhone" property="supPhone"/>
+        <result column="supMoney" property="supMoney"/>
+        <result column="supAddressNo" property="supAddressNo"/>
+        <result column="supAddress" property="supAddress"/>
+        <result column="supRegion" property="supRegion"/>
+        <result column="supDefault" property="supDefault"/>
+        <result column="supComment" property="supComment"/>
+    </resultMap>
+</mapper>

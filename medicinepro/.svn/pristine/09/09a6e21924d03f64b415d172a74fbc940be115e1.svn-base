@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>采购进货(老商品添加)</title>
+    <link rel="stylesheet" href="layui/css/layui.css" media="all">
+    <script src="layui/layui.js"></script>
+    <script src="layui/layui.all.js"></script>
+    <script src="JQuery/jquery-3.4.1.min.js"></script>
+
+    <style>
+        /*将表单的信息隐藏，边框，圆角边框*/
+        .body-color {
+            display: none;
+            border: 1px solid #000;
+            height: 485px;
+            width: 898px;
+            background-color: #EBEBEB;
+            border-radius: 2px;
+        }
+
+        /*设置title的字体颜色，边框，字体*/
+        body .demo-class .layui-layer-title {
+            color: #35529E;
+        }
+
+        /*左边部分*/
+        #addform-left {
+            background-color: #EBEBEB;
+            border: 1px solid #9F9F9F;
+            border-radius: 2px;
+            width: 435px;
+            height: 445px;
+            margin: 8px 0 0 5px;
+            display: inline-block;
+        }
+
+        #addform-left #lefttop-list {
+            font-size: 13px;
+            width: 80px;
+            margin-left: 5px;
+            margin-top: -8px;
+            background-color: #fff;
+        }
+
+        #addform-left p {
+            font-size: 12.5px;
+            margin-left: 2px;
+        }
+
+        #addform-left p span {
+            color: red;
+        }
+
+        #addform-left .lefttop-steptwo a {
+            color: red;
+            font-weight: bold;
+            font-size: 15px;
+            margin-left: 10px;
+            text-decoration: underline;
+        }
+
+        /*搜索框*/
+        .lefttop-search {
+            margin-top: 10px;
+        }
+
+        .lefttop-search .layui-input {
+            width: 120px;
+            height: 20px;
+            border-color: #9F9F9F;
+            border-radius: 0;
+            display: inline-block;
+        }
+
+        .lefttop-search .layui-btn {
+            height: 25px;
+            line-height: 25px;
+            margin: -3px 0 0 10px;
+            font-size: 12px;
+            border-radius: 50px;
+        }
+
+        /*左边的选项卡部分*/
+        .layui-tab {
+            width: 433px;
+        }
+
+        .layui-tab .layui-tab-title li {
+            font-size: 12px;
+        }
+
+        /*右边部分*/
+        #addform-right {
+            background-color: #EBEBEB;
+            border: 1px solid #9F9F9F;
+            border-radius: 2px;
+            width: 435px;
+            height: auto;
+            margin: 8px 5px 0 0;
+            clear: both;
+            float: right;
+            display: inline-block;
+        }
+
+        #addform-right #righttop-list {
+            font-size: 13px;
+            width: 55px;
+            margin-left: 5px;
+            margin-top: -8px;
+            background-color: #fff;
+        }
+
+        #addform-right .layui-btn {
+            height: 22px;
+            line-height: 22px;
+            margin: 3px 0 11px 20px;
+            font-size: 12px;
+            border-radius: 50px;
+        }
+    </style>
+</head>
+<body>
+<!-- 左边部分-->
+<div id="addform-left">
+    <p id="lefttop-list">查询商品列表</p>
+    <p class="lefttop-search">
+        输入商品编号或名称查询商品：
+        <input type="text" name="title" id="searchText" required lay-verify="required" autocomplete="off"
+               class="layui-input">
+        <button type="button" class="layui-btn layui-btn-xs" id="join-product" data-type="getCheckData">加入所选商品(F8)
+        </button>
+    </p>
+    <!--选项卡-->
+    <div class="layui-tab layui-tab-card">
+        <ul class="layui-tab-title">
+            <li class="layui-this">商品清单</li>
+        </ul>
+        <div class="layui-tab-content" style="height: auto;background-color: #fff;">
+            <!--商品清单-->
+            <div class="layui-tab-item layui-show" style="overflow:auto;margin: -18px 0 0 -8px;height:342px;">
+                <table class="layui-hide" id="product" lay-filter="product"></table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 右边部分-->
+<div id="addform-right">
+    <p id="righttop-list">所选商品</p>
+    <div style="margin-top: -10px;background-color: #fff;height:400px;">
+        <table class="layui-hide" id="test-right" lay-filter="test-right"></table>
+    </div>
+    <!--按钮-->
+    <button id="delete" type="button" class="layui-btn layui-btn-xs" data-type="getCheckData">删除(Del)</button>
+    <button id="right" type="button" class="layui-btn layui-btn-xs">确定(F5)</button>
+    <button type="button" class="layui-btn layui-btn-xs" id="cancle">退出(F4)</button>
+</div>
+<script src="js/allocationCommodity.js"></script>
+</body>
+</html>

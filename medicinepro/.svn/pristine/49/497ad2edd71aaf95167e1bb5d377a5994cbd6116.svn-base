@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>商品退货</title>
+    <link rel="stylesheet" href="/layui/css/layui.css" media="all">
+    <script src="/layui/layui.js" charset="utf-8"></script>
+
+</head>
+<body style="margin: 5px">
+<form class="layui-form" action="saleManagement.html">
+    <div class="layui-form">
+        <!--头部信息部分-->
+        <div class="layui-form-item" style="background-color: rgba(39,58,45,0.1);height: 60px">
+            <label style="font-size: 18px; font-weight: bold;display:inline-block;margin-top: 15px"
+                   class="layui-icon layui-icon-cart">顾客退货</label>
+
+            <!--日期与单号-->
+            <div style="float: right;padding-top: 10px ">
+                <!--日期框-->
+                <div class="layui-inline" style="display: inline-block">
+                    <label class="layui-form-label">退货日期</label>
+                    <div class="layui-input-inline" style="width: 100px">
+                        <input type="text" name="recDateSale" class="layui-input" id="test-limit1" placeholder="yyyy-MM-dd">
+                    </div>
+                </div>
+                <div class="layui-form-item" style="margin-left: -50px;display: inline-block">
+                    <label class="layui-form-label">单号</label>
+                    <div class="layui-input-block">
+                        <input id="saleNumber" type="text" name="recOdd" lay-verify="title" autocomplete="off"  class="layui-input" style="color: red;width: 135px"  readonly="readonly">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="height: 50px;margin-top: -10px;margin-bottom: -10px">
+
+            <!--客户名称下拉框-->
+            <div class="layui-form-item" style="width: 200px;display: inline-block;margin-left:-30px">
+                <label class="layui-form-label">客户名称</label>
+                <div class="layui-input-block">
+                    <select id="duo2" name="duo2" lay-filter="aihao">
+                        <option value="">请选择...</option>
+                    </select>
+                </div>
+            </div>
+
+            <!--单据下拉框-->
+            <div class="layui-form-item" style="width: 280px;display: inline-block;margin-left: 300px">
+                <label class="layui-form-label">销售单据</label>
+                <div class="layui-input-block">
+                    <select id="oddNum1" name="oddNum" lay-filter="oddNum">
+                        <option value="">请选择...</option>
+                    </select>
+                </div>
+            </div>
+
+            <!--仓库下拉框-->
+            <div class="layui-form-item" style="width: 200px;display: inline-block;float: right">
+                <label class="layui-form-label">收货仓库</label>
+                <div class="layui-input-block">
+                    <select id="redDepotNo1" name="redDepotNo" lay-filter="aihao1">
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="layui-bg-blue">
+
+    <!--商品添加和导入按钮-->
+    <div class="site-demo-button" id="layerDemo">
+
+        <!--添加-->
+        <input type="button" data-method="offset" data-type="auto"
+               class="layui-btn layui-bg-green" value="商品退货"/>
+
+    </div>
+
+    <hr class="layui-bg-blue">
+
+    <!--数据表格-->
+    <div style="font-size: 16px;margin-bottom: -15px">
+        <table class="layui-hide" id="test" lay-filter="saleTable"></table>
+        <label style="color: red;padding-left: 10px;">应退金额:￥<span id="shouldNumber"></span></label>
+
+        <div class="layui-form-item" style="color: #0000FF;padding-left: -50px; display: inline-block">
+            <label class="layui-form-label">总数量</label>
+            <div class="layui-input-block">
+                <input id="allNumber" type="text" name="recTotalNumber" lay-verify="title" autocomplete="off"  class="layui-input"
+                       style="color: red;display: inline-block;width: 70px;height: 35px"  readonly="readonly">
+            </div>
+        </div>
+    </div>
+
+    <div>
+
+        <div class="layui-form-item" style="height: 43px;margin-top: 5px;padding-top: 5px; border: 1px skyblue solid;">
+
+            <!--实收金额-->
+            <label class="layui-form-label" style="margin-left:-30px">实付金额</label>
+            <div class="layui-input-inline" style="width: 100px;border: 1px salmon  solid">
+                <input type="text" id="duo3" name="duo4" autocomplete="off"  class="layui-input" placeholder="￥">
+            </div>
+
+
+            <!--经办人选择-->
+            <label class="layui-form-label">经办人:</label>
+            <div class="layui-input-inline" style="width: 120px;">
+                <select id="jingbanr" name="recEmployeeNo" lay-filter="jingban">
+                </select>
+            </div>
+
+            <!--备注文本框-->
+            <div style="display: inline-block">
+                <label class="layui-form-label">备注:</label>
+                <div class="layui-input-inline" style="">
+                    <input type="text" id="recRemark" name="recRemark" lay-verify="title" autocomplete="off" placeholder="请输入备注"
+                           class="layui-input">
+                </div>
+
+                <!--提交按键-->
+                <div class="layui-form-item" style="display: inline-block;margin-left: 50px">
+                    <div class="layui-input-block" style="margin-left: 5px">
+                        <button type="submit" class="layui-btn" lay-submit lay-filter="formDemo">保存</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script src="/JQuery/jquery-3.4.1.min.js"></script>
+<script>
+    //动态生成退货单号
+    $(function(){
+        $.ajax({
+            type: "post",
+            url: "/getReturnOddNumber.action",
+            data: "",
+            success: function(msg){
+                $("#saleNumber").val(msg.recOdd);
+            }
+        });
+    });
+    //销售退货日期
+    layui.use('laydate', function () {
+        var laydate = layui.laydate;
+        var ins22 = laydate.render({
+            elem: '#test-limit1'
+            ,value: getCurrentTime()
+            ,min: '2019-01-01'
+            ,max: getCurrentTime()
+            ,ready: function(){
+                ins22.hint('退货日期可选值设定在 <br> 2019-01-01 到 '+getCurrentTime()+'');
+            }
+        });
+        /**
+          * 获取当前时间 格式：yyyy-MM-dd HH:MM:SS
+          */
+        function getCurrentTime() {
+            var date = new Date();//当前时间
+            var month = zeroFill(date.getMonth() + 1);//月
+            var day = zeroFill(date.getDate());//日
+            var hour = zeroFill(date.getHours());//时
+            var minute = zeroFill(date.getMinutes());//分
+            var second = zeroFill(date.getSeconds());//秒
+
+            //当前时间
+            var curTime = date.getFullYear() + "-" + month + "-" + day;
+
+            return curTime;
+        }
+
+        /**
+          * 补零
+          */
+        function zeroFill(i) {
+            if (i >= 0 && i <= 9) {
+                return "0" + i;
+            } else {
+                return i;
+            }
+        }
+    })
+    //保存收货仓库ID
+    var warID=""
+    //客户ID
+    var cliID=""
+    //保存根据客户ID 选择的销售单据ID
+    var oddNum=""
+    //下拉列表
+    layui.use(['form', 'upload', 'layer'], function () {
+        var form = layui.form,
+            $ = layui.jquery;
+        //查询符合条件收货仓库列表
+        $.ajax({
+            url: '/searchreturnAllwarHName.action', //传递的路径，搜索供货商信息
+            dataType: 'json', //预料要返回的数据
+            data: {'state': 0},	//查询状态为正常的所有机构类型
+            type: 'post',
+            success: function (data) { //回调函数
+                $.each(data, function (item) {
+                    $('#redDepotNo1').append('<option value="'+data[item].warID+'">'+data[item].warName+'</option>');// 下拉菜单里添加元素
+                });
+                layui.form.render("select");
+            }
+        })
+        //监听仓库下拉列表选择
+        form.on('select(aihao1)', function(data){
+            //出货仓库ID
+            window.warID=data.value
+            //保存为全局变量 当没选择仓库则为空
+            warID=data.value;
+
+        });
+        //客户下拉列表
+        $.ajax({
+            url: '/searchAllReturnSupplierName.action', //传递的路径，搜索供货商信息
+            dataType: 'json', //预料要返回的数据
+            data: {'state': 0},	//查询状态为正常的所有机构类型
+            type: 'post',
+            success: function (data) { //回调函数
+                $.each(data, function (item) {
+                    $('#duo2').append('<option value="'+data[item].cliID+'">'+data[item].cliName+'</option>');// 下拉菜单里添加元素
+
+                });
+                layui.form.render("select");
+            }
+        })
+        //监听客户下拉列表选择
+        //设置变量 空值ajax交互数量
+        form.on('select(aihao)', function(data){
+            //出货仓库ID
+            window.cliID=data.value;
+            //保存为全局变量 当没选择客户则为空
+            cliID=data.value;
+            //根据选择的客户ID 查询相对于的销售单据
+                $.ajax({
+                    url: '/searchreturnNumByCliID.action', //传递的路径，搜索供货商信息
+                    dataType: 'json', //预料要返回的数据
+                    data: {'cliID': cliID},	//查询状态为正常的所有机构类型
+                    type: 'post',
+                    success: function (data) { //回调函数
+                        $('#oddNum1').empty();
+                        console.log(data);
+                        $('#oddNum1').append('<option value="">请选择...</option>');
+                        $.each(data, function (item) {
+                               $('#oddNum1').append('<option value="'+data[item].redOdd+'">'+data[item].redOdd+'</option>');// 下拉菜单里添加元素
+                        });
+                        layui.form.render("select");
+                    }
+                })
+            //监听销售单据下拉列表选择
+            form.on('select(oddNum)', function(data){
+                //保存选择为全局变量
+                window.oddNum=data.value;
+                oddNum=data.value
+            });
+        });
+
+        //经办人下拉列表
+        $.ajax({
+            url: '/searchAllEmployessName.action', //传递的路径，搜索供货商信息
+            dataType: 'json', //预料要返回的数据
+            data: {'state': 0},	//查询状态为正常的所有机构类型
+            type: 'post',
+            success: function (data) { //回调函数
+                console.log(data);
+                $.each(data, function (index,item) {
+                    console.log(item);
+                    console.log(item.empName);
+                    $('#jingbanr').append('<option value="'+item.empNo+'">'+item.empName+'</option>');// 下拉菜单里添加元素
+                });
+                layui.form.render("select");
+            }
+        })
+
+    });
+    //表单
+    layui.use(['form', 'layedit', 'laydate'], function () {
+        var form = layui.form
+            , layer = layui.layer
+            , layedit = layui.layedit
+            , laydate = layui.laydate;
+
+        //日期
+        laydate.render({
+            elem: '#date'
+        });
+        //创建一个编辑器
+        var editIndex = layedit.build('LAY_demo_editor');
+
+        //监控实收金额输入框 判断是否有中文或者英文字符
+        $("#duo3").bind("input",function () {
+            var vale= $(this).val();
+            var a=1;
+            for (var i=0;i<vale.length;i++){
+                if(/^[a-zA-Z]/.test(vale.substr(i,1))||/^[\u4e00-\u9fa5]/.test(vale.substr(i,1))){
+                    layer.msg("请勿输入文字或字符")
+                    $(this).val("")
+                }else if(vale.substr(i,1)=="."){
+                    a++;
+                }
+            }
+            if(a>2){
+                layer.msg("请输入正确金额")
+                $(this).val("")
+            }
+        })
+        //监听指定开关
+        form.on('switch(switchTest)', function (data) {
+            layer.msg('开关checked：' + (this.checked ? 'true' : 'false'), {
+                offset: '6px'
+            });
+            layer.tips('温馨提示：请注意开关状态的文字可以随意定义，而不仅仅是ON|OFF', data.othis)
+        });
+        //监听提交
+        form.on('submit(formDemo)', function (data) {
+            if(tableData.length>0){
+                if($("#duo3").val()==""){
+                    $("#duo3").focus();
+                }else {
+                    $.ajax({
+                        url: '/ReturnFormInfo.action', //传递的路径，搜索供货商信息
+                        dataType: 'json', //预料要返回的数据
+                        data: JSON.stringify(data.field),	//查询状态为正常的所有机构类型
+                        type: 'post',
+                        contentType:'application/json',
+                        success: function (data) { //回调函数
+                            $.ajax({
+                                type: "POST",
+                                url: "/ReturnComTableInfo.action",
+                                data: {data:JSON.stringify(tableData)},
+                                traditional:true,
+                                dataType:"json",
+                                success: function(data){
+                                    if(data!=null){
+                                        layer.alert("恭喜！提交成功", {
+                                            title: '提交信息'
+                                        })
+                                        window.setTimeout(function(){
+                                            window.location.reload();
+                                        },1000);
+                                    }
+                                },
+                                error: function(){
+                                }
+                            });
+                        }
+                    })
+                }
+            }else{
+                window.setTimeout(function(){
+                    window.location.reload();
+                },1000);
+                layer.alert("没有添加商品信息");
+            }
+            return false;
+        });
+    });
+    //新增弹窗
+    layui.use('layer', function () {
+        var $ = layui.jquery, layer = layui.layer;
+        //触发事件
+        var active = {
+            offset: function (othis) {
+                //没选择客户 不能弹出添加商品页面
+                if(cliID==""){
+                    layer.msg('请选择退货客户');
+                //没选择单据 不能弹出添加商品页面
+                }else if(oddNum==""){
+                    layer.msg('请选择销售单据');
+                }else{
+                    var type = othis.data('type')
+                    , text = othis.text();
+                    var index=layer.open({
+                        type: 2
+                        , title: "商品退货"
+                        , offset: type //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+                        , id: 'layerDemo' + type //防止重复弹出
+                        , content: 'addReturnList.html' //弹出框内容
+                        /*, btn: '关闭全部'*/
+                        , btnAlign: 'r' //按钮居中
+                        ,scrollbar:false
+                        , area: ['1000px', '500px']
+                        , shade: 0.1 //不显示遮罩
+                    });
+
+                }
+            }
+        };
+        $('#layerDemo .layui-btn').on('click', function () {
+            var othis = $(this), method = othis.data('method');
+            active[method] ? active[method].call(this, othis) : '';
+        });
+    });
+    //创建全局数组变量保存子弹窗传的数据
+    var tableData=[];
+    //第一次数据表格渲染 tableData为空
+    saledCom1(tableData);
+    //添值方法(与子弹窗一致)
+    function saledCom(checkData){
+        if(tableData.length > 0){//判断全局数组是否有数据
+            for(var i = 0; i < checkData.length; i++){//循环选中每条的数据
+                var states = false;//定义重复状态
+                for(var y = 0; y < tableData.length; y++){//循环全局数组数据
+                    if(checkData[i].comId == tableData[y].comId){
+                        states = true;//有重复改变重复状态为真
+                        //有重复值数量＋1
+                        tableData[y].duo1=Number(tableData[y].duo1)+1;
+                    }
+                }
+                if(!states){//判断不重复则将选中的数据插入全局数组中
+                    tableData.push(checkData[i]);
+                }
+            }
+
+        }else{
+            //数组没有数据 直接赋值
+            tableData=checkData;
+        }
+        saledCom1(tableData)
+    };
+    //数据表格
+    function saledCom1(tableData) {
+        layui.use('table', function () {
+            var table = layui.table,
+                util=layui.util;
+            table.render({
+                elem: '#test'
+                ,data:tableData
+                ,id:"saleTable"
+                ,totalRow: true //开启合计行
+                ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                ,height:240
+                ,cols: [[ //表头
+                    {type:'checkbox', fixed: 'left'}
+                    , {field: 'comId', width: 100, title: '商品编号',align:'center', totalRowText: '合计'}
+                    , {field: 'comName', width: 100, title: '商品名称',align:'center'}
+                    , {field: 'comSimpleCode', width: 100, title: '简码',align:'center'}
+                    , {field: 'comProduct', width: 120, title: '规格型号',align:'center'}
+                    , {field: 'comBarCode', width: 180, title: '商品条码',align:'center'}
+                    , {field: 'comManufact', width: 100, title: '生产厂商',align:'center'}
+                    , {field: 'comApproval', width: 100, title: '批准文号',align:'center'}
+                    , {field: 'comPrice', width: 100, title: '预设售价',align:'center'}
+                    , {field: 'duo1', width: 100, title: '退货数量',align:'center',sort: true, edit: 'text', totalRow: true}
+                    , {field: 'duo', width: 100, title: '退货金额',align:'center',sort: true, totalRow: true,
+                        templet:function (d) {//自定义模块
+                            return Number(d.comPrice)*Number(d.duo1)
+                        }
+                    }
+                ]]
+                ,toolbar: false
+                ,page:true
+                ,done:function (res) {
+                    var onwanceTotal=0;//结算后销售金额
+                    layui.each(res.data,function(index,d){
+                        onwanceTotal+=Number(d.comPrice)*Number(d.duo1)
+                    })
+                    //修改结算后销售金额
+                    this.elem.next().find('.layui-table-total td[data-field="duo"] .layui-table-cell').text(onwanceTotal)
+                    //应付金额
+                    $("#shouldNumber").text(onwanceTotal)
+                    //当表格有数据 回调将合计行小数点去除
+                    if(tableData.length>0){
+                        //查询页面元素
+                        var a = $(".layui-table-total div:eq(9)").html();
+                        a = a.substr(0,a.indexOf("."));
+                        //总数量
+                        $("#allNumber").val(a)
+                        $(".layui-table-total div:eq(9)").html(a);
+
+                    }
+                }
+            });
+            //监听单元格编辑
+            table.on('edit(saleTable)', function(obj){
+                var value = obj.value //得到修改后的值
+                    ,data = obj.data //得到所在行所有键值
+                    ,field = obj.field; //得到字段
+                //获取编辑前的值
+                var a = $(".layui-table-total div:eq(9)").html();
+                //判断数据类型
+                if(!Number(value)) {
+                    //数量为0则在全局变量删除此数据
+                    if(value==0){
+                        for(var a=0;a<tableData.length;a++){
+                            if(data.comId==tableData[a].comId){
+                                tableData.splice(a,1);
+                                break;
+                            }
+                        }
+                        //一条数据 数量更改为1 则刷新页面
+                        if(tableData.length=1){
+                            window.location.reload();
+                        }else{
+                            //重新渲染表格
+                            comchoosedTable(tableData);
+                        }
+
+                    }else{
+                        layer.msg('请输入数字');
+                        // 重点 赋值
+                        $(".layui-table-total div:eq(9)").html(a)
+                        table.reload('saleTable', {
+                            data:tableData
+                        });
+                    }
+                }else{
+                    //异步通过商品id在库存表查询编辑后的数量是否大于库存
+                    $.ajax({
+                        url: "/IfReturnNumBigRepertory.action",
+                        type: "post",
+                        dataType: "text",
+                        data: {"comId": data.comId, "uPNum": value},
+                        success: function (list) {
+                            if(value>Number(list)){
+                                layer.msg("退货数不能大于购买数");
+                                console.log($(".layui-table-total div:eq(9)").html())
+                                table.reload('saleTable', {
+                                    data:tableData
+                                });
+                            }else{
+                                //遍历全局变量
+                                for(var i=0;i<tableData.length ;i++){
+                                    //改变编辑行在全局变量的数量
+                                    if(tableData[i].comId===data.comId){
+                                        tableData[i].duo1=value;
+                                        //重新渲染表格
+                                        saledCom1(tableData);
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+            //当子弹窗传入数据保存到全局变量tableData时 重载表格
+            if(tableData.length>0){
+                //执行重载
+                table.reload('saleTable', {
+                    data:tableData
+                });
+            }
+
+        });
+    }
+</script>
+</body>
+</html>

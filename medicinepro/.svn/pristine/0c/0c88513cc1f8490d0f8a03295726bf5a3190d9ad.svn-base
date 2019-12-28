@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>采购进货-新商品添加</title>
+    <link rel="stylesheet" href="layui/css/layui.css" media="all">
+    <script src="layui/layui.js"></script>
+    <script src="layui/layui.all.js"></script>
+
+    <style>
+        /*将表单的信息隐藏，边框，圆角边框*/
+        #addform{background-color:#EBEBEB;display: none;border:1px solid #000;margin-left:2px; height:520px;width:495px;border-radius: 2px;}
+        /*设置title的字体颜色，边框，字体*/
+        body .demo-class .layui-layer-title{color:#35529E; border: none;font-size: 12px;}
+        /*表单中的第一个div*/
+        .layui-form-item{margin-top: 15px;margin-left:-15px;border: 1px solid #B4B4B4;border-radius:2px;width:435px;padding:5px 0 0 20px;}
+        #addform form input{border-color: #B4B4B4;}
+        #clickLayui{display: none}
+    </style>
+
+</head>
+<body>
+<div id="fatherbox">
+    <form action="" method="post" style="margin-top: 10px;margin-left:35px;font-size: 12px;" class="layui-form">
+        <div class="layui-form-item">
+            <table>
+                <tr>
+                    <td><label>所属类别:</label>
+                        <input type="text" name="categoryNo" required
+                               lay-verify="required" id="catName"
+                               autocomplete="off" class="layui-input"
+                               style="width: 100px;height: 20px;display:
+                           inline-block;margin-top: 5px">
+                        <i class="layui-icon" style="margin-left: 5px" id="icon-click" >&#xe615;</i></td>
+                    <td>
+                        <label style="margin-left: 38px;">商品编号:</label>
+                        <input type="text" name="comId" required
+                               lay-verify="required" id="textId"
+                               autocomplete="off" class="layui-input"
+                               style="width: 130px;height: 20px;display:
+                           inline-block;margin-top: 5px">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>商品名称:</label>
+                        <input type="text" name="comName" required
+                               lay-verify="required"
+                               autocomplete="off" class="layui-input"
+                               style="width: 130px;height: 20px;display:
+                           inline-block;margin-top: 5px">
+                    </td>
+                    <td>
+                        <label style="margin-left:38px;">供&nbsp; 货&nbsp; 商:</label>
+                        <select name="comMedicame" lay-verify="" lay-search style="width: 130px;height: 20px;display:
+                           inline-block;margin-top: 5px" title="comMedicame" id="selectSupplier">
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>名称简拼:</label>
+                        <input type="text" name="comSimpleCode" required
+                               lay-verify="required"
+                               autocomplete="off" class="layui-input"
+                               style="width: 130px;height: 20px;display:
+                           inline-block;margin-top: 5px">
+                    </td>
+                    <td>
+                        <label style="margin-left:38px;">单&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;位:</label>
+                        <select  id="unit" name="comUnit" lay-filter="business" lay-ignor lay-verify=""  lay-search style="width: 130px;height: 20px;display:
+                           inline-block;margin-top: 5px">
+                            <!--<option value="010">板</option>
+                            <option value="021" >盒</option>
+                            <option value="010">袋</option>
+                            <option value="021" >瓶</option>
+                            <option value="010">剂</option>
+                            <option value="021" >卷</option>
+                            <option value="0571" selected></option>-->
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>产品规格:</label>
+                        <input type="text" name="comProduct" required
+                               lay-verify="required"
+                               autocomplete="off" class="layui-input"
+                               style="width: 130px;height: 20px;display:
+                           inline-block;margin-top: 5px">
+                    </td>
+                    <td>
+                        <label style="margin-left: 38px;">预设进价:</label>
+                        <input type="text" name="comPurchase" required
+                               lay-verify="required"
+                               autocomplete="off" class="layui-input"
+                               style="width: 130px;height: 20px;display:
+                           inline-block;margin-top: 5px">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>预设售价:</label>
+                        <input type="text" name="comPrice" required
+                               lay-verify="required"
+                               autocomplete="off" class="layui-input"
+                               style="width: 130px;height: 20px;display:
+                           inline-block;margin-top: 5px">
+                    </td>
+                    <td>
+                        <label style="margin-left:40px;">生产日期:</label>
+                        <input type="date" name="comBarCode" required
+                               lay-verify="required" id="comBarCode"
+                               autocomplete="off" class="layui-input"
+                               style="width: 130px;height: 20px;display:
+                           inline-block;margin-top: 5px">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>库存下限:</label>
+                        <input type="number" name="comMinKuNumber" required
+                               lay-verify="required"
+                               autocomplete="off" class="layui-input"
+                               style="width: 130px;height: 20px;display:
+                           inline-block;margin-top: 5px" min="1">
+                    </td>
+                    <td>
+                        <label style="margin-left: 38px;">保&nbsp;&nbsp;质&nbsp;&nbsp;期:</label>
+                        <input type="text" name="comQuality" required lay-verify="required" autocomplete="off" class="layui-input" value="24"
+                               style="width: 100px;height: 20px;display:inline-block;margin-top: 5px">&nbsp;个&nbsp;月
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>通&nbsp;&nbsp;用&nbsp;&nbsp;名:</label>
+                        <select name="comGenericName" lay-verify="" lay-search style="width: 130px;height: 20px;display:
+                           inline-block;margin-top: 5px">
+                            <option value="0571" selected></option>
+                        </select>
+                    </td>
+                    <td>
+                        <label style="margin-left: 38px;">批准文号:</label>
+                        <input type="text" name="comApproval" required
+                               lay-verify="required"
+                               autocomplete="off" class="layui-input"
+                               style="width: 130px;height: 20px;display:
+                           inline-block;margin-top: 5px">
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <label>生产厂商:</label>
+                        <select id="selectManufacturer" name="manId" lay-verify="" lay-search style="width: 355px;height: 20px;display:
+                           inline-block;margin-top: 5px">
+                            <option value="0571" selected></option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <label>备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注:</label>
+                        <input type="text" name="comRemarks"
+                               autocomplete="off" class="layui-input"
+                               style="width: 355px;height: 20px;display:
+                           inline-block;margin-top: 5px">
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <input type="checkbox" name="" value="0"
+                               style="margin-top: 10px;display: inline-block" disabled="true">&nbsp;该商品可拆零
+                        &nbsp;
+                        拆零系数&nbsp;<input type="number" style="width: 60px;" min="0"><span style="color: red">
+                          拆零系数是该商品拆零后的个数
+                      </span>
+                    </td>
+                </tr>
+            </table>
+            <div class="layui-tab layui-tab-card" style="margin-left: -19px;">
+                <ul class="layui-tab-title">
+                    <li class="layui-this" style="font-size: 10px;display: inline-block;margin-top: 0px;">GSP属性设置</li>
+                    <li style="font-size: 10px;display: inline-block;margin-top: 0px;">特价提成设置</li>
+
+                </ul>
+                <div class="layui-tab-content" style="margin-top: 0px;display: inline-block;">
+                    <!--GPS属性设置-->
+                    <div class="layui-tab-item layui-show">
+                        <table id="secondtable">
+                            <tr>
+                                <td>
+                                    <label>养护方式:</label>
+                                    <select name="" lay-verify="" lay-search style="width: 140px;height: 20px;display:
+                           inline-block;margin-top: 5px">
+                                        <option value="0571" selected></option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <label>&nbsp;&nbsp;&nbsp;GSP验收属性:</label>
+                                    <select name="" lay-verify="" lay-search style="width: 133px;height: 20px;display:
+                           inline-block;margin-top: 5px">
+                                        <option value="0571" selected></option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>储藏条件:</label>
+                                    <input type="text" name="title"
+                                           autocomplete="off" class="layui-input"
+                                           style="width: 140px;height: 20px;display:
+                           inline-block;margin-top: 5px">
+                                </td>
+                                <td>
+                                    <label style="margin-left: 36px;">注册证号:</label>
+                                    <input type="text" name="title" autocomplete="off" class="layui-input"
+                                           style="width: 134px;height: 20px;display:inline-block;margin-top: 5px">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <input type="checkbox" name="" value="0"
+                                           style="margin-top: 10px;display: inline-block">&nbsp;电子监管
+                                    <input type="checkbox" name="" value="0"
+                                           style="margin-top: 10px;display: inline-block;margin-left: 30px">&nbsp;含麻黄碱
+                                    <input type="checkbox" name="" value="0"
+                                           style="margin-top: 10px;display: inline-block;margin-left: 22px">&nbsp;处方药
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <input type="checkbox" name="" value="0"
+                                           style="margin-top: 10px;display: inline-block">&nbsp;特殊药品
+                                    <input type="checkbox" name="" value="0"
+                                           style="margin-top: 10px;display: inline-block;margin-left: 120px">&nbsp;口服药，一月的计量限制
+                                    <input type="text" name="title" required lay-verify="required" autocomplete="off" class="layui-input" value="24"
+                                           style="width: 60px;height: 20px;display:inline-block;margin-top: 5px">
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <!--特价提成设置-->
+                    <div class="layui-tab-item">
+                        <table id="thirdtable">
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="" value="0" style="display: inline-block;">
+                                    <label>商品特价:</label>
+                                    <input type="text" name="title" autocomplete="off" class="layui-input"
+                                           style="width: 130px;height: 20px;display:inline-block;margin-top: 5px">
+                                </td>
+                                <td>&nbsp;&nbsp;
+                                    <input type="checkbox" name="" value="0" style="display: inline-block;">
+                                    <label>会员特价:</label>
+                                    <input type="text" name="title" autocomplete="off" class="layui-input"
+                                           style="width: 130px;height: 20px;display:inline-block;margin-top: 5px">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="" value="0" style="display: inline-block;" disabled="">
+                                    <label>期限开始:</label>
+                                        <input type="text" class="layui-input" id="test-startDate" placeholder="yyyy-MM-dd"  disabled=""
+                                        style="width: 130px;height: 20px;display: inline-block;margin-top: 5px;">
+                                </td>
+                                <td>&nbsp;&nbsp;
+                                    <input type="checkbox" name="" value="0" style="display: inline-block;"  disabled="">
+                                    <label>期限结束:</label>
+                                    <input type="text" class="layui-input" id="test-endDate" placeholder="yyyy-MM-dd"  disabled=""
+                                           style="width: 130px;height: 20px;display: inline-block;margin-top: 5px;">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <label style="margin-left: 15px;">销售提成:</label>
+                                    <input type="text" name="title" autocomplete="off" class="layui-input"
+                                           style="width: 130px;height: 20px;display:inline-block;margin: 5px 0 30px">元
+                                    <span style="color: #0000FF;">(指销售本商品，给业务员的提成)</span>
+                                </td>
+                            </tr>
+                        </table>
+                       </div>
+                </div>
+            </div>
+        </div>
+        <center>
+        <button type="button" class="layui-btn layui-btn-radius" lay-submit="" lay-filter="formokAdd"
+                style="font-size: 12px;display: inline-block;height: 30px;line-height: 15px;margin:-10px 50px 0 -30px;">保存(F5)</button>
+        <button type="button" class="layui-btn layui-btn-radius" id="cancel"
+                style="font-size: 12px;display: inline-block;height: 30px;line-height: 15px;margin:-10px 50px 0 -30px;">退出(Esc)</button>
+        </center>
+    </form>
+</div>
+<div id="clickLayui">
+    <div id="test1"></div>
+</div>
+<script src="JQuery/jquery-3.4.1.min.js"></script>
+<script>
+    //动态获取下拉列表
+    layui.use('form', function () {
+       /* var form = layui.form;*/
+        //1、单位
+        $.ajax({
+            type: "POST",
+            url: '/commodityManager/selectUnit.action',  //从数据库查询返回的是个list
+            datatype: "json",
+            success: function (data) {
+                //window.alert(JSON.stringify(data));
+                $.each(data, function (index, item) {
+                    $('#unit').append(new Option(item.comUnit,item.comUnit));//往下拉菜单里添加元素
+                })
+                form.render();//菜单渲染 把内容加载进去
+            }
+        })
+        //2、生产厂商
+        $.ajax({
+            type:"POST",
+            url:'/commodityManager/selectManufacturer.action',  //从数据库查询返回的是个list
+            dataType: "json",
+            success: function (data) {
+                $.each(data,function(index,item){
+                    $('#selectManufacturer').append(new Option(item.manName,item.manId));//往下拉菜单里添加元素
+                })
+                form.render();//菜单渲染 把内容加载进去
+            }
+        })
+
+        //3、供货商
+        $.ajax({
+            type:"POST",
+            url:'/systemsetup/getSupplier.action',  //从数据库查询返回的是个list
+            dataType: "json",
+            success: function (data) {
+                $.each(data,function(index,item){
+                    $('#selectSupplier').append(new Option(item.supName,item.supID));//往下拉菜单里添加元素
+                })
+                form.render();//菜单渲染 把内容加载进去
+            }
+
+        })
+
+    })
+    //将最大编号增加到页面
+    $.ajax({
+        type:"post",
+        url:"/commodityManager/returnCommodityId.action",
+        success:function (data) {
+            /*window.alert(data)*/
+            var textId=$("#textId");//根据文本框的id找到这个文本框，并将其变成jquery对象
+            textId.val(data);
+        }
+    })
+        //限期开始
+        //树状线
+       $(function () {
+            $("#icon-click").click(function(){
+                layer.open({
+                    type:1,
+                    title:null,
+                    skin: 'demo-class',
+                    closeBtn:2,
+                    shade:0,
+                    zIndex:0,
+                    offset:['50px','60px'],
+                    area: ['170px', '220px'],//宽高
+                    // shadeClose:true,//点击弹出框外部弹出框关闭
+                    btn:null,//取消确定按钮
+                    // maxmin: true,
+                    content: $('#clickLayui'),
+                    end:function () {
+                        $("#clickLayui").css({ "display": "none" });
+                    }
+                });
+
+
+            })
+
+           layui.use(['layer','form'],function() {
+               var form=layui.form;
+               var layer=layui.layer;
+               //新增提交 监听表单提价按钮
+               form.on('submit(formokAdd)',function (data2) {
+                   var datas=JSON.stringify(data2)
+                   /*alert(JSON.stringify(data2));*/
+                   $.ajax({
+                       url:"/commodityManager/insertCommodity.action",
+                       type:'post',
+                       data:data2.field,
+                       dataType:'JSON',
+                       success: function (data) {
+                           if(data==1){
+                               window.alert("新增成功")
+                               //layer.close(index)
+                               //保存后刷新页面
+                               window.location.href=window.location.href;
+                           }
+                       }
+                   })
+
+               })
+           //退出当前页
+           $('#cancel').on('click',function () {
+               var index = parent.layer.getFrameIndex(window.name);
+               parent.layer.close(index);//关闭当前页
+           })
+           $.ajax({
+               type: "POST",
+               url: "/commodityManager/searchCommodityParentType.action",
+               success: function(msg){
+
+                   layui.use('tree', function(){
+                       var tree = layui.tree;
+                       //渲染
+                       var inst1 = tree.render({
+                           elem: '#test1'  //绑定元素
+                           , data:msg
+                           , edit: ['add', 'update', 'del'] ,
+                           click: function(obj){
+                               var cat=$('#catName');
+                               cat.val(obj.data.title)
+                           }
+                       });
+                   });
+               }
+           });
+            layui.use('laydate', function() {
+                var laydate = layui.laydate;
+                //常规用法
+                laydate.render({
+                    elem: '#test-startDate'
+                    ,value:new Date
+                    ,isInitValue: true //是否允许填充初始值，默认为 true
+                });
+            });
+
+            //限期结束
+            layui.use('laydate', function() {
+                var laydate = layui.laydate;
+
+                //常规用法
+                laydate.render({
+                    elem: '#test-endDate'
+                    ,value:new Date
+                    ,isInitValue: true //是否允许填充初始值，默认为 true
+                });
+                });
+            });
+        })
+</script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+采购进货中老商品添加【商品清单【查RepertorySon】包括以下三个表：】
+
+1.商品表【Commodity】
+    private String comManufact;[生产厂商编号]
+    --> private Manufacturer manufacturer;[实际comManufact的最终目的是去查找Manufacturer表中的一条数据(也就是封装成java中的一个manufacturer对象)]
+
+2.生产厂商表【Manufacturer】
+
+3.库存明细表【RepertorySon】
+    private String repComId [商品编号]
+    --> private Commodity commodity[实际repComId的最终目的是去查找Commodity表中的一条数据(也就是封装成java中的一个commodity对象)]
+
+采购进货中老商品添加【最近进货【查Commodity】包括以下两个表：】
+1.商品表【Commodity】
+2.单据明细表【ReceiptsDetailed】
+
+---------数据库----------
+修改commodity表
+duo1 --> 数量
+duo2 --> 生产日期
+duo4 --> 有效期至
+duo5 --> 单

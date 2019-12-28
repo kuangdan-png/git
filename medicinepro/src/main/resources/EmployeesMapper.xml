@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="employees.crud">
+    <!--1、查询所有员工的信息集合-->
+    <select id="searchEmployeesList" resultMap="employeesmap">
+	    select e.*,p.proName,p.proId,c.citName,c.citId,d.disName,d.disId,dl.dutName
+	from employees e
+	inner join province p on e.empProId=p.proId
+	inner join city c on e.empCitId=c.citId
+	inner join district d on e.empDisId=d.disId
+	inner join duty_list dl on e.empDutyNo=dl.dutId
+        where empState=1
+        order by empDesc
+        limit #{page},#{limit}
+    </select>
+    <!--员工表的地址编号【empAddressNo】FK对应地址表的地址编号【addId】PK -->
+    <resultMap id="employeesmap" type="employees">
+        <!--mybatis如何处理联合主键(复合主键)?-->
+        <id column="empNo" property="empNo"/>
+        <result column="empName" property="empName"/>
+        <result column="empSex" property="empSex"/>
+        <result column="empTel" property="empTel"/>
+        <result column="empEmail" property="empEmail"/>
+        <result column="empRatio" property="empRatio"/>
+        <result column="empDutyNo" property="empDutyNo"/>
+        <result column="empRemark" property="empRemark"/>
+        <result column="empSalary" property="empSalary"/>
+        <result column="empAddressNo" property="empAddressNo"/>
+        <result column="empBirthday" property="empBirthday"/>
+        <result column="empHiredate" property="empHiredate"/>
+        <result column="userName" property="userName"/>
+        <result column="userPass" property="userPass"/>
+        <!--包含地址表-->
+        <association property="address" javaType="address">
+            <id column="addId" property="addId"/>
+            <result column="addProvinceNo" property="addProvinceNo"/>
+            <result column="addCityNo" property="addCityNo"/>
+            <result column="addDistrictNo" property="addDistrictNo"/>
+            <result column="addDetail" property="addDetail"/>
+            <result column="addDescribe" property="addDescribe"/>
+        </association>
+        <!--包含省份表-->
+        <association property="province" javaType="province">
+            <id column="proId" property="proId"/>
+            <result column="proName" property="proName"/>
+            <result column="proSort" property="proSort"/>
+            <result column="proDescription" property="proDescription"/>
+        </association>
+        <!--包含市级表-->
+        <association property="city" javaType="city">
+            <id column="citId" property="citId"/>
+            <result column="citName" property="citName"/>
+            <result column="citSort" property="citSort"/>
+            <result column="citProvinceNo" property="citProvinceNo"/>
+            <result column="citDescription" property="citDescription"/>
+        </association>
+        <!--包含区级表-->
+        <association property="district" javaType="district">
+            <id column="disId" property="disId"/>
+            <result column="disName" property="disName"/>
+            <result column="disSort" property="disSort"/>
+            <result column="disCityNo" property="disCityNo"/>
+            <result column="disDescription" property="disDescription"/>
+        </association>
+        <!--员工职务表-->
+        <association property="dutyList" javaType="dutyList">
+            <id column="dutId" property="dutId"/>
+            <result column="dutName" property="dutName"/>
+            <result column="dutSort" property="dutSort"/>
+            <result column="dutFatherNo" property="dutFatherNo"/>
+            <result column="dutRemark" property="dutRemark"/>
+        </association>
+    </resultMap>
+
+    <!--地址表-->
+    <resultMap id="addressmap" type="address">
+        <id column="addId" property="addId"/>
+        <result column="addProvinceNo" property="addProvinceNo"/>
+        <result column="addCityNo" property="addCityNo"/>
+        <result column="addDistrictNo" property="addDistrictNo"/>
+        <result column="addDetail" property="addDetail"/>
+        <result column="addDescribe" property="addDescribe"/>
+    </resultMap>
+    <!--省份表-->
+    <resultMap id="provincemap" type="province">
+        <id column="proId" property="proId"/>
+        <result column="proName" property="proName"/>
+        <result column="proSort" property="proSort"/>
+        <result column="proDescription" property="proDescription"/>
+    </resultMap>
+    <!--市级表-->
+    <resultMap id="citymap" type="city">
+        <id column="citId" property="citId"/>
+        <result column="citName" property="citName"/>
+        <result column="citSort" property="citSort"/>
+        <result column="citProvinceNo" property="citProvinceNo"/>
+        <result column="citDescription" property="citDescription"/>
+    </resultMap>
+    <!--区级表-->
+    <resultMap id="districtmap" type="district">
+        <id column="disId" property="disId"/>
+        <result column="disName" property="disName"/>
+        <result column="disSort" property="disSort"/>
+        <result column="disCityNo" property="disCityNo"/>
+        <result column="disDescription" property="disDescription"/>
+    </resultMap>
+
+    <!--查询所有地址表-->
+    <select id="searchAddress" resultMap="addressmap">
+        select * from address
+    </select>
+    <!--查询所有省份-->
+    <select id="searchProvince" resultMap="provincemap">
+        select * from province
+    </select>
+    <!--查询所有市级-->
+    <select id="searchCity" resultMap="citymap">
+        select * from city where citProvinceNo=#{citProvinceNo}
+    </select>
+    <!--查询所有区级-->
+    <select id="searchDistrict" resultMap="districtmap">
+        select * from district where disCityNo=#{disCityNo}
+    </select>
+    <!--查询所有职务-->
+    <select id="searchDutyList" resultMap="dutyListmap">
+        select * from duty_list
+    </select>
+    <resultMap id="dutyListmap" type="dutyList">
+        <id column="dutId" property="dutId"/>
+        <result column="dutName" property="dutName"/>
+        <result column="dutSort" property="dutSort"/>
+        <result column="dutFatherNo" property="dutFatherNo"/>
+        <result column="dutRemark" property="dutRemark"/>
+    </resultMap>
+
+    <!--查询分页时总条数-->
+    <select id="searchSize" resultType="int">
+        select COUNT(*) from employees where empState=1
+    </select>
+
+    <!--查询员工最大编号-->
+    <select id="searchMaxEmployeesId" resultType="string">
+        select MAX(empNo) empNo from employees
+    </select>
+
+    <!--新增员工信息-->
+    <insert id="insertEmployeesInfo" parameterType="java.util.List">
+      insert into employees(empNo,empName,empSex,empEmail,empTel,empAddressNo,
+      empBirthday,empDutyNo,empHiredate,empSalary,empRatio,empRemark,empProId,empCitId,empDisId,userName,userPass)
+	  value(#{empNo},#{empName},#{empSex},#{empEmail},#{empTel},#{empAddressNo},
+	  #{empBirthday},#{empDutyNo},#{empHiredate},#{empSalary},#{empRatio},#{empRemark},#{empProId},#{empCitId},#{empDisId},#{userName},#{userPass})
+    </insert>
+
+    <!--删除员工信息-->
+    <delete id="deleteEmployeesInfo" parameterType="java.lang.String">
+        update employees set empState=0  where empNo in
+        <foreach collection="array" item="empNo" open="(" separator="," close=")">
+            #{empNo}
+        </foreach>
+    </delete>
+
+    <!--条件查询员工信息-->
+    <select id="selectLikeEmployees" resultMap="employeesmap">
+        select e.*,p.proName,c.citName,d.disName,dl.dutName
+        from employees e
+        inner join province p on e.empProId=p.proId
+        inner join city c on e.empCitId=c.citId
+        inner join district d on e.empDisId=d.disId
+        inner join duty_list dl on e.empDutyNo=dl.dutId
+        where empState=1
+        <if test="empNo!=null and empNo!=''">
+            AND e.empNo=#{empNo}
+        </if>
+        <if test="empName!=null and empName!=''">
+            AND e.empName like concat('%',#{empName},'%')
+        </if>
+        <if test="empTel!=null and empTel!=''">
+            AND e.empTel=#{empTel}
+        </if>
+        <if test="dutName!=null and dutName!=''">
+            AND dl.dutName=#{dutName}
+        </if>
+        order by e.empDesc
+        limit #{page},#{limit}
+    </select>
+
+    <!--修改员工信息-->
+    <update id="updateEmployees">
+        update employees
+	set empName=#{empName},empSex=#{empSex},empEmail=#{empEmail},empTel=#{empTel},
+	empAddressNo=#{empAddressNo},empBirthday=#{empBirthday},empDutyNo=#{empDutyNo},
+	empHiredate=#{empHiredate},empSalary=#{empSalary},empRatio=#{empRatio},
+	empRemark=#{empRemark},empProId=#{empProId},empCitId=#{empCitId},empDisId=#{empDisId},
+	userName=#{userName},userPass=#{userPass}
+	where empNo=#{empNo}
+    </update>
+</mapper>

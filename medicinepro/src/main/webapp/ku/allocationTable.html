@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>库存调拨</title>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <style>
+        .layui-table th{
+            font-size: 10px;
+        }
+        .layedit-tool-span{
+            margin-left: 30px;
+        }
+        .layedit-tool-ul li{
+            display: inline-block;
+            margin: 14px;
+            margin-top: 5px;
+            border:1px solid white;
+            width: 62px;
+            height: 56px;
+        }
+        .layedit-tool-li i{
+            position: relative;
+            left: 10px;
+        }
+        .layedit-tool-ul li:hover{
+            border:1px #EBEBEB solid;
+            background: rgba(159, 159, 159, 0.2);
+        }
+        .layeli{
+            position: relative;
+            left: 16px;
+        }
+        #laytable{
+            display: none;
+        }
+        #body{border: 1px solid black;}
+        .buttonStyle{width: 100px;height:30px;
+            line-height: 30px;background:#C1CEE8;cursor: pointer;margin-top: 10px;}
+        .border{border-top: 0;border-right: 0;border-left: 0;border-bottom: 1px solid black;width: 600px;}
+        #date{width: 150px;background:#EDF2F8;}
+        .layui-input{width: 120px}
+    </style>
+
+</head>
+<body style="width: 1150px ;margin: auto;">
+    <div id="body" class="layui-tab" >
+        <!--导航-->
+        <ul class="layui-tab-title">
+            <li class="layui-this">库存调拨单</li>
+            <li>库存调拨情况</li>
+        </ul>
+        <!--导航内容-->
+        <div class="layui-tab-content">
+            <!--内容1-->
+            <div class="layui-tab-item layui-show">
+                <h2 ><b style="margin-left: 450px">库存调拨</b><span style="font-size: 16px;margin-left: 200px;">单号：<span id="odd"></span></span></h2>
+                <div class="layui-form" style="border: 1px #888888 solid;margin-top: 13px; height: 60px;line-height: 60px ; background: #EDF2F8">
+                    <span class="layedit-tool-span">
+                        调出仓库：
+                        <div class="layui-inline">
+                            <select id="wareHoseNameOut" class="changeWidth" lay-verify="" style="width: 50px;">
+                            </select>
+                        </div>
+
+                        调入仓库：
+                        <div class="layui-inline">
+                            <select id="wareHoseNameIn" lay-verify="" style="width: 50px;">
+                            </select>
+                        </div>
+                        调拨日期：
+                      <div class="layui-input-inline">
+                        <input type="text" class="layui-input border" id="date" placeholder="yyyy-MM-dd HH:mm:ss">
+                      </div>
+                    </span>
+                </div>
+                <!--按钮-->
+                <div style="border: 1px #888888 solid;height: 35px;margin-top: 10px;border-radius: 4px;line-height:35px;">
+                    <button type="button" id="add" class="layui-btn" style="background:#C1CEE8;color: #03206C; border:2px;border-radius: 25px;height:26px;line-height: 20px;margin-left: 20px;">添加商品</button>
+                    <button type="button" id="delete" class="layui-btn" style="background:#C1CEE8;color: #03206C; border:2px;border-radius: 25px;height:26px;line-height: 20px;margin-left: 20px;">删除商品</button>
+                </div>
+                <div>
+                    <!--表格-->
+                    <table class="layui-hide" id="test5"></table>
+                </div>
+                <div>
+                    经办人：
+                    <select id="employe" lay-verify="" style="width: 70px;">
+                    </select>
+                    <span class="layedit-tool-span">
+                        备注：<input type="text" id="remark" class="border">
+                    </span>
+                </div>
+                <div style="height: 40px;">
+                    <div style="float: right">
+                         <button type="button" id="save" class="layui-btn layui-btn-normal buttonStyle">保存</button>
+                    </div>
+                </div>
+            </div>
+            <!--内容2-->
+            <div class="layui-tab-item">
+                <!--导航-->
+                <div style="border: 1px white solid; height: 65px;margin-left:-10px;margin-top: -9px">
+                    <ul class="layedit-tool-ul">
+                        <li class="layedit-tool-li">
+                            <div id="layerDemo">
+                                <i class="layui-icon layui-icon-search layui "  data-method="offset" data-type="auto" style="font-size: 30px; color: #000000;"></i>
+                                </br>高级查询
+                            </div>
+                        </li>
+                        <li class="layedit-tool-li">
+                            <i class="layui-icon layui-icon-file layui "  data-method="offset" data-type="auto" style="font-size: 30px; color: #000000;"></i>
+                            </br>查看单据
+                        </li>
+                    </ul>
+                </div>
+
+                <!--时间-->
+                调拨时间：
+                <input type="text" style="width: 100px" id="test1" >
+                至
+                <input type="text" style="width: 100px" id="test2" >
+                <!--查询按钮-->
+                <button type="button" id="search" class="layui-btn" style="background:#C1CEE8;color: #03206C; border:2px;border-radius: 25px;height:26px;line-height: 20px;">查询</button>
+                <!--表格-->
+                </br>仓库调拨列表
+                <!--表格-->
+                <table class="layui-hide" id="test" lay-filter="test"></table>
+                单据的详细信息：
+                <!--表格-->
+                <table class="layui-hide" id="test6"></table>
+            </div>
+        </div>
+    </div>
+
+    <!--库存调拨高级查询-->
+    <div id="laytable">
+        <div style="margin-left: 40px;margin-top: 20px;">
+            调出仓库：
+            <div class="layui-inline">
+                <select id="wareHoseOut" class="changeWidth" lay-verify="" style="width: 100px;">
+                </select>
+            </div>
+        </div>
+        <div style="margin-left: 40px;margin-top: 20px;">调入仓库：
+            <div class="layui-inline">
+                <select id="wareHoseIn" lay-verify="" style="width: 100px;">
+                </select>
+            </div>
+        </div>
+        <div style="margin-left: 53px;margin-top: 20px;">经办人：
+            <select id="employeO" lay-verify="" style="width: 100px;">
+            </select>
+        </div>
+    </div>
+    <script src="../JQuery/jquery-3.4.1.min.js"></script>
+    <script src="../layui/layui.js"></script>
+    <script src="../js/allocationTable.js"></script>
+<script type="text/javascript">
+    //创建全局变量保存子弹窗传的参
+    var tableData = [];
+
+    //初始化表格
+    saledCom1(tableData);
+
+    //渲染表格方法
+    function saledCom1(tableData) {
+        layui.use('table', function () {
+            var table = layui.table;
+            table.render({
+                elem: '#test5'
+                , id: 'table1'
+                , data: tableData
+                , cols: [[
+                    {type: 'checkbox', fixed: 'left'},
+                    {field: 'repComId', title: '商品编号', sort: true, align: 'center'}
+                    , {field: 'repProName', title: '商品名称', align: 'center'}
+                    , {templet: '<div>{{d.commodity.comUnit}}</div>', title: '单位', sort: true, align: 'center'}
+                    , {templet: '<div>{{d.commodity.comProduct}}</div>', title: '规格', sort: true, align: 'center'}
+                    , {templet: '<div>{{d.commodity.comRegister}}</div>', title: '批号', sort: true, align: 'center'}
+                    , {templet: '<div>{{d.commodity.comEndTime}}</div>', title: '保质期', sort: true, align: 'center'}
+                    , {
+                        field: 'duo1', title: '数量', sort: true, edit: 'text', align: 'center', templet: function (d) {
+                            if (d.duo1 > d.reqCurrent) {
+                                return d.reqCurrent
+                            } else {
+                                return d.duo1
+                            }
+                        }
+                    }
+                    , {
+                        templet: '<div>{{d.commodity.manufacturer.manName}}</div>',
+                        width: 150,
+                        title: '生产厂商',
+                        sort: true,
+                        align: 'center'
+                    }
+                    , {templet: '<div>{{d.commodity.comPurchase}}</div>', title: '售价', sort: true, align: 'center'}
+                    , {
+                        field: 'duo1', title: '总金额', sort: true, align: 'center', templet: function (d) {
+                            return parseInt(d.commodity.comPurchase) * parseInt(d.duo1)
+                        }
+                    }
+                ]], height: 235
+
+                , limit: 15
+                , limits: [1, 15, 30, 45]
+                , response: {
+                    "code": 0, //解析接口状态
+                    "msg": "", //解析提示文本
+                    "count": 1000, //解析数据长度
+                    "data": [] //解析数据列表
+                }, parseData: function (res) { //res 即为原始返回的数据 //curr得到当前页码//count得到数据总量
+                    return {
+                        "code": 0, //解析接口状态
+                        "msg": res.msg, //解析提示文本
+                        "count": res.count, //解析数据长度
+                        "data": res.data //解析数据列表
+                    }
+                }, done: function (obj) {
+                    layer.closeAll();
+                }
+            });
+            if (tableData.length > 0) {
+                table.reload('table1', {
+                    data: tableData
+                })
+            }
+        });
+    }
+
+    //当点击删除按钮时
+    $('#delete').click(function () {
+        layui.use('table', function () {
+            var table = layui.table;
+            var checkData = table.checkStatus('table1');
+            console.log(checkData);
+            //删除选中全局数组变量数据
+            layui.use('layer',function () {
+                layer.confirm('确认要删除吗？', {
+                    btn : [ '确定', '取消' ]//按钮
+                }, function(index) {
+                    for(var i = 0; i < checkData.data.length; i++){//循环选中每条的数据
+                        for(var y = 0; y < tableData.length; y++){//循环全局数组数据
+                            if(checkData.data[i].commodity.comId == tableData[y].commodity.comId){
+                                console.log(tableData[y].commodity);
+                                console.log(checkData.data[i].commodity);
+                                tableData.splice(y,1);
+                            }
+                        }
+                    }
+                    saledCom1(tableData);
+                    layer.close(index);
+                });
+            })
+        });
+    });
+    //当点击保存的时候
+    $('#save').click(function () {
+        layui.use(['table', 'layer'], function () {
+            var table = layui.table;
+            var layer = layui.layer;
+            //获得数据表格选择的数据
+            var checkData = table.checkStatus('table1');
+            //判断选择的长度
+            if (checkData.data.length > 0) {//长度 >0 说明选择了数据
+                //封装数据
+                var wareHoseNameIn = $('#wareHoseNameIn').val();
+                var wareHoseNameOut = $('#wareHoseNameOut').val();
+                var employe = $('#employe').val();
+                var odd = $('#odd').text();
+                var date = $('#date').val();
+                var remark = $('#remark').val();
+                layer.msg('保存成功');
+                $.ajax({
+                    url: '/allocationManager/addReceipts.action',
+                    type: 'post',
+                    data: {
+                        "recOdd": odd,
+                        "recDate": date,
+                        "recEmployeeNo": employe,
+                        "redPutNo": wareHoseNameIn,
+                        "redDepotNo": wareHoseNameOut,
+                        "recRemark": remark
+                    }
+                });
+                var b = JSON.stringify(checkData.data);
+                $.ajax({
+                    url: '/allocationManager//addReceiptsDetailed.action',
+                    contentType: "application/json;charset=UTF-8",
+                    type: 'post',
+                    dataType: 'json',
+                    data: b
+                    , success: function (data1) {
+                        layer.msg('保存成功');
+                        tableData =[];
+                        saledCom1(tableData);
+                        console.log(tableData);
+                        location.reload();
+                    }
+                });
+                location.reload();
+            } else {//长度==0 说明没有选择数据
+                layer.msg('请至少选择一条数据', {
+                    time: 5000, //20s后自动关闭
+                    btn: ['明白了', '好的']
+                });
+            }
+        });
+    });
+
+    //对表格的数据进行处理
+    function saledCom(checkData) {
+        //var  checkData= table.checkStatus('comsearch'); //获取选中行
+        if (tableData.length > 0) {//判断全局数组是否有数据
+            for (var i = 0; i < checkData.length; i++) {//循环选中每条的数据
+                var states = false;//定义重复状态
+                for (var y = 0; y < tableData.length; y++) {//循环全局数组数据
+                    if (checkData[i].comId == tableData[y].comId) {
+                        states = true;//有重复改变重复状态为真
+                        //有重复值数量＋1
+                        tableData[y].duo1 = Number(tableData[y].duo1) + 1;
+                    }
+                }
+                if (!states) {//判断不重复则将选中的数据插入全局数组中
+                    tableData.push(checkData[i]);
+                }
+            }
+        } else {
+            tableData = checkData;
+        }
+        //渲染表格
+        saledCom1(tableData);
+    }
+
+    layui.use(['element', 'laydate', 'table', 'layer'], function () {
+        var element = layui.element;
+        var laydate = layui.laydate;
+        var table = layui.table;
+        var layer = layui.layer;
+
+        //获取hash来切换选项卡，假设当前地址的hash为lay-id对应的值
+        var layid = location.hash.replace(/^#test1=/, '');
+
+        element.tabChange('test1', layid); //假设当前地址为：http://a.com#test1=222，那么选项卡会自动切换到“发送消息”这一项
+
+        //监听Tab切换，以改变地址hash值
+        element.on('tab(test1)', function () {
+            location.hash = 'test1=' + this.getAttribute('lay-id');
+        });
+
+        //单号日期
+        laydate.render({
+            elem: '#date'
+            , type: 'datetime'
+            , value: new Date()
+        });
+
+        //获得单号
+        $.ajax({
+            url: '/allocationManager/seachAllocationOdd.action',
+            type: 'post',
+            success: function (data) {
+                $('#odd').text(data);
+                $('#odd').css({"color": "red"});
+            }
+        });
+
+        // 自动获取仓库的下拉框
+        $.ajax({
+            url: '/wareHouseManager/searchWareHourseInfo.action',
+            dataType: 'json',
+            data: {'state': 0},	//查询状态为正常的所有机构类型
+            type: 'post',
+            success: function (data) {
+                var count = 0;
+                $.each(data, function (index, item) {
+                    count++;
+                    $('#wareHoseNameIn').append(new Option(item.warName, item.warID));// 下拉菜单里添加元素
+                    $('#wareHoseIn').append(new Option(item.warName, item.warID));// 下拉菜单里添加元素
+                    $('#wareHoseNameOut').append(new Option(item.warName, item.warID));// 下拉菜单里添加元素
+                    $('#wareHoseOut').append(new Option(item.warName, item.warID));// 下拉菜单里添加元素
+                    if (count == 1) {
+                        $('#wareHoseNameIn').val(item.warID);
+                        $('#wareHoseIn').val(item.warID);
+                        $('#wareHoseNameOut').val(item.warID);
+                        $('#wareHoseOut').val(item.warID);
+                    }
+                });
+                layui.form.render("select");
+            }
+        });
+
+        //自动获取经办人的下拉框
+        $.ajax({
+            url: '/allocationManager/searchEmployeesJin.action',
+            dataType: 'json',
+            data: {'state': 0},	//查询状态为正常的所有机构类型
+            type: 'post',
+            success: function (data) {
+                var count = 0;
+                $.each(data, function (index, item) {
+                    count++;
+                    $('#employe').append(new Option(item.empName, item.empNo));// 下拉菜单里添加元素
+                    $('#employeO').append(new Option(item.empName, item.empNo));// 下拉菜单里添加元素
+                    if (count == 1) {
+                        $('#employe').val(item.empNo);
+                        $('#employeO').val(item.empNo);
+                    }
+                });
+                layui.form.render("select");
+            }
+        });
+
+        //隐藏按钮
+        $('#delete').hide();
+
+        //点击增加商品
+        $("#add").click(function () {
+            var wareHoseNameIn = $('#wareHoseNameIn').val();
+            var wareHoseNameOut = $('#wareHoseNameOut').val();
+            if (wareHoseNameIn == wareHoseNameOut) {
+                //配置一个透明的询问框
+                layer.msg('调出仓库和调入仓库不能相同', {
+                    time: 5000, //20s后自动关闭
+                    btn: ['明白了', '好的']
+                });
+            } else {
+                //显示按钮
+                $('#delete').show();
+                window.PartitionId = wareHoseNameOut;
+
+                //打开页面
+                layer.open({
+                    type: 2,
+                    content: '../allocationCommodity.html',
+                    success: function (layero, index) {
+                        var body = layer.getChildFrame('body', index);
+                        var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+                        // body.find('input').val();
+                    },
+                    area: ['910px', '500px']
+                });
+            }
+        });
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#test1' //指定元素
+            , value: new Date()
+        });
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#test2' //指定元素
+            , value: new Date()
+        });
+        //监听单元格编辑
+        table.on('edit(table1)', function (obj) {
+            var value = obj.value //得到修改后的值
+                , data = obj.data //得到所在行所有键值
+                , field = obj.field; //得到字段
+            var a = $(".layui-table-total div:eq(7)").html();
+            console.log(a);
+            console.log(value);
+            if(value>data.reqCurrent){
+
+            }
+            //获得
+        });
+        // 查询数据调拨主表
+        table.render({
+            elem: '#test'
+            , url: '/allocationManager/searchReceiptsInfo.action'
+            , cols: [[
+                {field: 'recOdd', title: '调拨单号', sort: true, align: 'center'}
+                , {field: 'redDepotNo', title: '调出仓库', align: 'center'}
+                , {field: 'redPutNo', title: '调入仓库', sort: true, align: 'center'}
+                , {field: 'recDate', title: '调拨日期', align: 'center'}
+                , {field: 'recEmployeeNo', title: '经办人', align: 'center'} //minWidth：局部定义当前单元格的最小宽度，layui 2.2.1 新增
+                , {field: 'recRemark', title: '备注', sort: true, align: 'center'}
+            ]], response: {
+                statusCode: 200 //重新规定成功的状态码为 200，table 组件默认为 0
+            }, parseData: function (res) { //将原始数据解析成 table 组件所规定的数据
+                return {
+                    "code": res.status, //解析接口状态
+                    "msg": res.msg, //解析提示文本
+                    "count": res.count, //解析数据长度
+                    "data": res.row//解析数据列表
+                };
+            }
+            , page: true
+            , height: 200
+        });
+        // 查询数据调拨明细表
+        table.render({
+            elem: '#test6'
+            , url: '/allocationManager/searchReceiptsDetailedInfo.action'
+            , cols: [[
+                {field: 'redProcutsNo', title: '商品编号', sort: true, align: 'center'}
+                , {field: 'redName', title: '商品名称', align: 'center'}
+                , {field: 'redCount', title: '数量', sort: true, align: 'center'}
+                , {field: 'redUnit', title: '单位', sort: true, align: 'center'}
+                , {field: 'redredduct', title: '规格', sort: true, align: 'center'}
+                , {field: 'redPermitNo', title: '批号', sort: true, align: 'center'}
+                , {field: 'redPrice', title: '成本价', sort: true, align: 'center'}
+            ]], response: {
+                statusCode: 200 //重新规定成功的状态码为 200，table 组件默认为 0
+            }, parseData: function (res) { //将原始数据解析成 table 组件所规定的数据
+                return {
+                    "code": res.status, //解析接口状态
+                    "msg": res.msg, //解析提示文本
+                    "count": res.count, //解析数据长度
+                    "data": res.row//解析数据列表
+                };
+            }, height: 200
+            , page: true
+        });
+
+        var obj={};
+        //当点击添加商品
+        $('#layerDemo .layui').on('click', function () {
+            layer.open({
+                type: 1
+                , title: '库存调拨高级查询'
+                , area: ['330px', '235px']
+                , id: 'layerDemo1' //防止重复弹出
+                , content: $('#laytable')
+                , btn: ['确定', '退出']
+                , btnAlign: 'c' //按钮居中
+                , shade: 0 //不显示遮罩
+                , yes: function () {
+                    obj.wareHoseOut=$("#wareHoseOut").val();
+                    obj.wareHoseIn=$("#wareHoseIn").val();
+                    obj.employeO=$("#employeO").val();
+                    //重载单据主表
+                    table.reload('test', {
+                        where :obj
+                    });
+                    //重载单据明细表
+                    table.reload('test6', {
+                        where :obj
+                    });
+                    //关闭层
+                    layer.closeAll();
+                }
+            });
+        });
+
+        //全部变量赋值方法
+        var receiptsDetailedInfo = [];
+
+        function comchoosedTable(receiptsDetailedInfo){
+            table.reload('test6', {
+                where :{"recNo":receiptsDetailedInfo[0].recNo}
+            })
+        }
+
+        // 监听行双击事件（双击事件为：rowDouble）
+        table.on('rowDouble(test)', function (obj) {
+                //将双击的行数据做参数
+                receiptsDetailedInfo[0] = obj.data;
+                console.log(receiptsDetailedInfo);
+                //渲染表格方法
+                comchoosedTable(receiptsDetailedInfo);
+            }
+        );
+        var b={};
+        $("#search").click(function () {
+            b.duo4=$('#test1').val();
+            b.duo5=$('#test2').val();
+            //重载单据主表
+            table.reload('test', {
+                where :b
+            });
+            //重载单据明细表
+            table.reload('test6', {
+                where :b
+            });
+        });
+    });
+</script>
+</body>
+</html>

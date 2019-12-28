@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="stockandgoodsreturn.crud">
+    <!--1、单号信息查询【采购进货、退货查询】-->
+    <select id="StockAndGoodsReturnSearch" resultMap="ReceiptsMap">
+        select receipts.recNo,employees.empNo,warehouse.warID,receiptstype.retNo
+        ,receipts.*,employees.*,warehouse.*,receiptstype.* from receipts
+        inner join employees on recEmployeeNo=empNo
+        inner join warehouse on warID=redDepotNo
+        inner join receiptstype on recDocumentTypes=retNo
+        where recDocumentTypes='RN00003'
+        <if test="null != recWareNo and '' != recWareNo">
+            AND redDepotNo  = #{recWareNo}
+        </if>
+        <if test="startTime != null and startTime !='' and endTime != null and endTime !=''">
+           AND  recDate BETWEEN #{startTime} AND #{endTime}
+        </if>
+        limit #{page},#{limit}
+    </select>
+
+    <!--2、分页查询总条数-->
+    <select id="SearchTotalRow" resultType="int">
+        select count(*) from receipts
+        inner join employees on recEmployeeNo=empNo
+        inner join warehouse on warID=redDepotNo
+        inner join receiptstype on recDocumentTypes=retNo
+        where recDocumentTypes='RN00003'
+        <if test="null != recWareNo and '' != recWareNo">
+            AND redDepotNo  = #{recWareNo}
+        </if>
+        <if test="startTime != null and startTime !='' and endTime != null and endTime !=''">
+            AND  recDate BETWEEN #{startTime} AND #{endTime}
+        </if>
+    </select>
+
+    <!--3、查询单据详细信息-->
+    <select id="SearchReceiptsInfo" resultType="receiptsDetailed" parameterType="java.lang.String">
+        select * from receipts_detailed where redRecNo in(
+          select recNo from receipts
+          where recDocumentTypes='RN00003')
+    </select>
+    <!--4、根据单号查询单据详细信息-->
+    <select id="SearchReceiptsInfobyRecNo" resultType="receiptsDetailed" parameterType="java.lang.String">
+       select * from receipts_detailed where redRecNo in(
+          select recNo from receipts
+          where recDocumentTypes='RN00003')
+        and redRecNo = #{recOdd}
+    </select>
+    <!--5、第一次进入采购退货查询【无数据】-->
+    <select id="searchPurchaseReturn" resultMap="stockandgoodsreturnmap">
+        SELECT * FROM receipts_detailed rd
+        INNER JOIN commodity c ON c.comId = rd.redProcutsNo
+        INNER JOIN manufacturer mf ON rd.redManufact = mf.manId
+        INNER JOIN receipts r ON r.recNo = rd.redRecNo
+        WHERE r.recOdd IS NULL
+    </select>
+    <!--6、第二次根据整单退货中的单号查询数据-->
+    <select id="searchPurchaseReturnByRecNo" resultMap="stockandgoodsreturnmap">
+        SELECT * FROM receipts_detailed rd
+        INNER JOIN commodity c ON c.comId = rd.redProcutsNo
+        INNER JOIN manufacturer mf ON rd.redManufact = mf.manId
+        INNER JOIN receipts r ON r.recNo = rd.redRecNo
+        WHERE r.recOdd = #{recOdd}
+    </select>
+    <!--7、查询出供货商，下拉框动态获取-->
+    <select id="searchsupplier" resultMap="SupplierMap">
+        select * from supplier WHERE duo1 = 0
+    </select>
+    <!--8、查询出仓库名称，下拉框动态获取-->
+    <select id="searchwarehouse" resultMap="WareHouseMap">
+        SELECT * FROM warehouse WHERE warForbidNo = 0
+    </select>
+
+    <!--单据明细表映射-->
+    <resultMap id="stockandgoodsreturnmap" type="receiptsDetailed">
+        <id column="redNo" property="redNo"/>
+        <result column="redOdd" property="redOdd"/>
+        <result column="redProcutsNo" property="redProcutsNo"/>
+        <result column="redName" property="redName"/>
+        <result column="redUnit" property="redUnit"/>
+        <result column="redredduct" property="redredduct"/>
+        <result column="redPermitNo" property="redPermitNo"/>
+        <result column="redDate" property="redDate"/>
+        <result column="redValidUntil" property="redValidUntil"/>
+        <result column="redPrice" property="redPrice"/>
+        <result column="redCount" property="redCount"/>
+        <result column="redManufact" property="redManufact"/>
+        <result column="redManufactName" property="redManufactName"/>
+        <result column="redPreprice" property="redPreprice"/>
+        <result column="redTotalPrice" property="redTotalPrice"/>
+        <result column="redSupplierNo" property="redSupplierNo"/>
+        <result column="redPutNo" property="redPutNo"/>
+        <result column="redDepotNo" property="redDepotNo"/>
+        <result column="redredchaseDate" property="redredchaseDate"/>
+        <result column="redComment" property="redComment"/>
+        <result column="redReturnDate" property="redReturnDate"/>
+        <result column="redDocumentTypes" property="redDocumentTypes"/>
+        <result column="redProductTypeNo" property="redProductTypeNo"/>
+        <result column="redProductTypeName" property="redProductTypeName"/>
+        <result column="redRecNo" property="redRecNo"/>
+        <result column="redZhe" property="redZhe"/>
+        <result column="redModel" property="redModel"/>
+        <result column="redQuanStock" property="redQuanStock"/>
+        <result column="redCountedQuantity" property="redCountedQuantity"/>
+        <association property="commodity" resultMap="CommodityMap">
+        </association>
+        <association property="receipts" resultMap="ReceiptsMap">
+        </association>
+        <association property="manufacturer" resultMap="Manufacturer" >
+        </association>
+        <collection property="supplier" resultMap="SupplierMap">
+        </collection>
+    </resultMap>
+
+    <!--单据信息映射-->
+    <resultMap id="ReceiptsMap" type="receipts">
+        <id column="recNo" property="recNo"/>
+        <result column="recOdd" property="recOdd"/>
+        <!--<result column="recDocumentTypes" property="recDocumentTypes"/>-->
+        <result column="recDate" property="recDate"/>
+        <result column="recEmployeeNo" property="recEmployeeNo"/>
+        <result column="recRemark" property="recRemark"/>
+        <!--<result column="recWareNo" property="recWareNo"/>-->
+        <result column="recTiaoNumber" property="recTiaoNumber"/>
+        <result column="recTotalNumber" property="recTotalNumber"/>
+        <result column="redPutNo" property="redPutNo"/>
+        <result column="redDepotNo" property="redDepotNo"/>
+        <result column="redFatherNo" property="redFatherNo"/>
+        <result column="redAmountPrice" property="redAmountPrice"/>
+        <result column="redActuallyPrice" property="redActuallyPrice"/>
+        <result column="redDiscountPrice" property="redDiscountPrice"/>
+        <result column="redOperator" property="redOperator"/>
+        <association property="receiptstype" resultMap="ReceiptstypeMap">
+        </association>
+        <association property="warehouse" resultMap="WareHouseMap">
+        </association>
+        <association property="employees" resultMap="EmployeesMap">
+        </association>
+    </resultMap>
+
+    <!--商品信息映射-->
+    <resultMap id="CommodityMap" type="commodity">
+        <id column="comId" property="comId"/>
+        <result column="comName" property="comName"/>
+        <result column="comSimpleCode" property="comSimpleCode"/>
+        <!--<result column="comTypeId" property="comTypeId"/>-->
+        <result column="comGenericName" property="comGenericName"/>
+        <result column="comBarCode" property="comBarCode"/>
+        <result column="comUnit" property="comUnit"/>
+        <result column="comEpherine" property="comEpherine"/>
+        <result column="comElectonic" property="comElectonic"/>
+        <result column="comProduct" property="comProduct"/>
+        <result column="comMedicame" property="comMedicame"/>
+        <result column="comRegister" property="comRegister"/>
+        <result column="comApproval" property="comApproval"/>
+        <!--<result column="comQuality" property="comQuality"/>-->
+        <result column="comState" property="comState"/>
+        <result column="comSpecial" property="comSpecial"/>
+        <result column="comPurchase" property="comPurchase"/>
+        <result column="comPrice" property="comPrice"/>
+        <!--<result column="comManufact" property="comManufact"/>-->
+        <result column="comRemarks" property="comRemarks"/>
+        <result column="comMinKuNumber" property="comMinKuNumber"/>
+    </resultMap>
+
+    <!--供货商映射-->
+    <resultMap id="SupplierMap" type="supplier">
+        <id column="supID" property="supID"/>
+        <result column="supName" property="supName"/>
+        <result column="supLinkman" property="supLinkman"/>
+        <result column="supPhone" property="supPhone"/>
+        <result column="supMoney" property="supMoney"/>
+        <result column="supAddressNo" property="supAddressNo"/>
+        <result column="supAddress" property="supAddress"/>
+        <result column="supRegion" property="supRegion"/>
+        <result column="supDefault" property="supDefault"/>
+        <result column="supComment" property="supComment"/>
+    </resultMap>
+
+    <!--单据类型映射-->
+    <resultMap id="ReceiptstypeMap" type="receiptstype">
+        <id column="retNo" property="retNo"/>
+        <result column="retName" property="retName"/>
+        <result column="retSort" property="retSort"/>
+        <result column="retRemark" property="retRemark"/>
+    </resultMap>
+
+    <!--仓库映射-->
+    <resultMap id="WareHouseMap" type="warehouse">
+        <id column="warID" property="warID"/>
+        <result column="warName" property="warName"/>
+        <result column="employeesNo" property="employeesNo"/>
+        <result column="warPhone" property="warPhone"/>
+        <result column="warAddressNo" property="warAddressNo"/>
+        <result column="warAddress" property="warAddress"/>
+        <result column="warDefault" property="warDefault"/>
+        <result column="warForbidNo" property="warForbidNo"/>
+        <result column="warComment" property="warComment"/>
+        <result column="repNumber" property="repNumber"/>
+        <result column="warTotalValue" property="warTotalValue"/>
+        <result column="warCurrent" property="warCurrent"/>
+        <result column="warLowest" property="warLowest"/>
+    </resultMap>
+    
+    <!--员工（操作员）表映射-->
+    <resultMap id="EmployeesMap" type="employees">
+        <id column="empNo" property="empNo"/>
+        <result column="empName" property="empName"/>
+        <result column="empCardId" property="empCardId"/>
+        <result column="empSex" property="empSex"/>
+        <result column="empTel" property="empTel"/>
+        <result column="empEmail" property="empEmail"/>
+        <result column="empRatio" property="empRatio"/>
+        <result column="empDutyNo" property="empDutyNo"/>
+        <result column="empRemark" property="empRemark"/>
+        <result column="empSalary" property="empSalary"/>
+        <result column="empAddressNo" property="empAddressNo"/>
+        <result column="empPoliticsStatus" property="empPoliticsStatus"/>
+        <result column="empEducation" property="empEducation"/>
+        <result column="empNativePlace" property="empNativePlace"/>
+        <result column="empNation" property="empNation"/>
+        <result column="empBirthday" property="empBirthday"/>
+        <result column="empHiredate" property="empHiredate"/>
+        <result column="empMaritalStatus" property="empMaritalStatus"/>
+        <result column="empManagerNo" property="empManagerNo"/>
+        <result column="empState" property="empState"/>
+        <result column="empWareNo" property="empWareNo"/>
+        <result column="empDeparmentId" property="empDeparmentId"/>
+    </resultMap>
+
+    <!--生产厂商表Map-->
+    <resultMap id="Manufacturer" type="manufacturer">
+        <id column="manId" property="manId"/>
+        <result column="manName" property="manName"/>
+        <result column="manTelPhe" property="manTelPhe"/>
+        <result column="manAddressNo" property="manAddressNo"/>
+        <result column="manAddress" property="manAddress"/>
+        <result column="manEmail" property="manEmail"/>
+        <result column="manRemarks" property="manRemarks"/>
+        <result column="duo1" property="duo1"/>
+        <result column="duo2" property="duo2"/>
+    </resultMap>
+</mapper>
